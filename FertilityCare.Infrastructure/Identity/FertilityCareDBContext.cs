@@ -13,7 +13,7 @@ namespace FertilityCare.Infrastructure.Identity
 {
     public class FertilityCareDBContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
     {
-        private static readonly string DB_CONNECTION_STRING = "Server=localhost,1433;Database=FertilityCareDB;UID=sa;PWD=12345;TrustServerCertificate=True;Encrypt=false";
+        private static readonly string DB_CONNECTION_STRING = "Server=localhost,1433;Database=fertility_care_db;UID=sa;PWD=12345;TrustServerCertificate=True;Encrypt=false";
 
         //public FertilityCareDBContext(DbContextOptions<FertilityCareDBContext> options)
         //   : base(options)
