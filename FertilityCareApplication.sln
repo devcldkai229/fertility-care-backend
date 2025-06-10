@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36109.1 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FertilityCare.Domain", "FertilityCare.Domain\FertilityCare.Domain.csproj", "{998E7F5D-6BF3-4957-93D5-EB6478A69220}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FertilityCare.Infrastructure", "FertilityCare.Infrastructure\FertilityCare.Infrastructure.csproj", "{2715B392-9A66-4FB6-9CE9-67D2CB9BCA56}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FertilityCare.UseCase", "FertilityCare.UseCase\FertilityCare.UseCase.csproj", "{4F8AF935-9D44-49E6-9226-B882C4FC08F3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FertilityCare.WebAPI", "FertilityCare.WebAPI\FertilityCare.WebAPI.csproj", "{974800B5-05E3-40C6-8CDF-0A9DEDC0D6E8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{998E7F5D-6BF3-4957-93D5-EB6478A69220}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{998E7F5D-6BF3-4957-93D5-EB6478A69220}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{998E7F5D-6BF3-4957-93D5-EB6478A69220}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{998E7F5D-6BF3-4957-93D5-EB6478A69220}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2715B392-9A66-4FB6-9CE9-67D2CB9BCA56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2715B392-9A66-4FB6-9CE9-67D2CB9BCA56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2715B392-9A66-4FB6-9CE9-67D2CB9BCA56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2715B392-9A66-4FB6-9CE9-67D2CB9BCA56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F8AF935-9D44-49E6-9226-B882C4FC08F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F8AF935-9D44-49E6-9226-B882C4FC08F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F8AF935-9D44-49E6-9226-B882C4FC08F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F8AF935-9D44-49E6-9226-B882C4FC08F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{974800B5-05E3-40C6-8CDF-0A9DEDC0D6E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{974800B5-05E3-40C6-8CDF-0A9DEDC0D6E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{974800B5-05E3-40C6-8CDF-0A9DEDC0D6E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{974800B5-05E3-40C6-8CDF-0A9DEDC0D6E8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {409211FE-5C11-4DDE-A1E7-4F64C2DD02EE}
+	EndGlobalSection
+EndGlobal
