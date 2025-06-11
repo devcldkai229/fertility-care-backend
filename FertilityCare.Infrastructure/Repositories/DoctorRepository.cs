@@ -58,7 +58,6 @@ namespace FertilityCare.Infrastructure.Repositories
         public async Task<Doctor> FindByIdAsync(Guid id)
         {
             var doctor = await _context.Doctors.FirstOrDefaultAsync(d => d.Id == id);
-
             if (doctor == null)
                 throw new NotFoundException("Doctor not found");
 
@@ -75,5 +74,6 @@ namespace FertilityCare.Infrastructure.Repositories
 
             return true;
         }
+
     }
 }

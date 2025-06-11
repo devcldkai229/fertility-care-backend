@@ -20,42 +20,6 @@ namespace FertilityCare.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task DeleteByIdAsync(long id)
-        {
-            var schedule = await _context.DoctorSchedules.FindAsync(id);
-            if (schedule == null)
-                throw new NotFoundException("Doctor schedule not found");
-
-            _context.DoctorSchedules.Remove(schedule);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task<IEnumerable<DoctorSchedule>> FindAllAsync()
-        {
-            return await _context.DoctorSchedules.ToListAsync();
-        }
-
-        public async Task<DoctorSchedule> FindByIdAsync(long id)
-        {
-            var schedule = await _context.DoctorSchedules.FirstOrDefaultAsync(ds => ds.Id == id);
-
-            if (schedule == null)
-                throw new NotFoundException("Doctor schedule not found");
-
-            return schedule;
-        }
-
-        public async Task<bool> IsExistAsync(long id)
-        {
-            var result = await _context.DoctorSchedules.FirstOrDefaultAsync(ds => ds.Id == id);
-            if (result == null)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
         public async Task<DoctorSchedule> SaveAsync(DoctorSchedule entity)
         {
             await _context.DoctorSchedules.AddAsync(entity);
@@ -74,6 +38,43 @@ namespace FertilityCare.Infrastructure.Repositories
 
             await _context.SaveChangesAsync();
             return existing;
+        }
+
+        public async Task DeleteByIdAsync(long id)
+        {
+            var schedule = await _context.DoctorSchedules.FindAsync(id);
+            if (schedule == null)
+                throw new NotFoundException("Doctor schedule not found");
+
+            _context.DoctorSchedules.Remove(schedule);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<DoctorSchedule>> FindAllAsync()
+        {
+            return await _context.DoctorSchedules.ToListAsync();
+        }
+
+        public async Task<DoctorSchedule> FindByIdAsync(long id)
+        {
+            var schedule = await _context.DoctorSchedules
+                .FirstOrDefaultAsync(ds => ds.Id == id);
+
+            if (schedule == null)
+                throw new NotFoundException("Doctor schedule not found");
+
+            return schedule;
+        }
+
+        public async Task<bool> IsExistAsync(long id)
+        {
+            var result = await _context.DoctorSchedules.FirstOrDefaultAsync(ds => ds.Id == id);
+            if (result == null)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }
