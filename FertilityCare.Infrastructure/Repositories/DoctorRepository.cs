@@ -1,5 +1,6 @@
 ﻿using FertilityCare.Domain.Entities;
 using FertilityCare.Infrastructure.Identity;
+using FertilityCare.Shared.Exceptions;
 using FertilityCare.UseCase.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -14,9 +15,14 @@ namespace FertilityCare.Infrastructure.Repositories
     {
         private readonly FertilityCareDBContext _context;
 
+        public DoctorRepository(FertilityCareDBContext context)
+        {
+            _context = context;
+        }
+
         public async Task<Doctor> SaveAsync(Doctor entity)
         {
-            _context.Doctors.Add(entity);
+            await _context.Doctors.AddAsync(entity);
             await _context.SaveChangesAsync();
             return entity;
         }
@@ -25,7 +31,7 @@ namespace FertilityCare.Infrastructure.Repositories
         {
             var existing = await _context.Doctors.FindAsync(entity.Id);
             if (existing == null)
-                throw new KeyNotFoundException("Doctor not found");
+                throw new NotFoundException("Doctor not found");
 
             _context.Entry(existing).CurrentValues.SetValues(entity);
             existing.UpdatedAt = DateTime.Now;
@@ -38,7 +44,7 @@ namespace FertilityCare.Infrastructure.Repositories
         {
             var doctor = await _context.Doctors.FindAsync(id);
             if (doctor == null)
-                throw new KeyNotFoundException("Doctor not found");
+                throw new NotFoundException("Doctor not found");
 
             _context.Doctors.Remove(doctor);
             await _context.SaveChangesAsync();
@@ -46,26 +52,28 @@ namespace FertilityCare.Infrastructure.Repositories
 
         public async Task<IEnumerable<Doctor>> FindAllAsync()
         {
-            return await _context.Doctors
-                .Include(d => d.UserProfile)
-                .ToListAsync();
+            return await _context.Doctors.ToListAsync();
         }
 
         public async Task<Doctor> FindByIdAsync(Guid id)
         {
-            var doctor = await _context.Doctors
-                .Include(d => d.UserProfile)
-                .FirstOrDefaultAsync(d => d.Id == id);
+            var doctor = await _context.Doctors.FirstOrDefaultAsync(d => d.Id == id);
 
             if (doctor == null)
-                throw new KeyNotFoundException("Doctor not found");
+                throw new NotFoundException("Doctor not found");
 
             return doctor;
         }
 
         public async Task<bool> IsExistAsync(Guid id)
         {
-            return await _context.Doctors.AnyAsync(d => d.Id == id);
+            var result = await _context.Doctors.FirstOrDefaultAsync(d => d.Id == id);
+            if (result == null)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

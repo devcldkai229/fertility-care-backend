@@ -14,9 +14,15 @@ namespace FertilityCare.UseCase.Implements
     {
         private readonly IAppointmentRepository _appointmentRepository;
 
+        private readonly IOrderStepRepository _stepRepository;
+
+        private readonly IOrderRepository _orderRepository;
+
+        public 
+
         public AppointmentService(IAppointmentRepository appointmentRepository)
         {
-            _appointmentRepository = appointmentRepository ?? throw new ArgumentNullException(nameof(appointmentRepository), "Appointment repository cannot be null.");
+            _appointmentRepository = appointmentRepository;
         }
 
         public async Task<IEnumerable<AppointmentDTO>> GetAppointmentsByStepIdAsync(Guid stepId)

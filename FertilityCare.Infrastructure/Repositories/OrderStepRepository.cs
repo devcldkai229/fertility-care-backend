@@ -17,7 +17,7 @@ namespace FertilityCare.Infrastructure.Repositories
 
         public OrderStepRepository(FertilityCareDBContext context)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context), "Database context cannot be null.");
+            _context = context;
         }
 
         public async Task DeleteByIdAsync(long id)

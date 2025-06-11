@@ -14,10 +14,12 @@ namespace FertilityCare.Infrastructure.Repositories
     public class TreatmentServiceRepository : ITreatmentServiceRepository
     {
         private readonly FertilityCareDBContext _context;
+
         public TreatmentServiceRepository(FertilityCareDBContext context)
         {
             _context = context;
         }
+
         public async Task DeleteByIdAsync(Guid id)
         {
             var service = await _context.TreatmentServices.FindAsync(id);

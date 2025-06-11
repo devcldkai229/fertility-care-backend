@@ -18,11 +18,6 @@ namespace FertilityCare.Infrastructure.Repositories
 
         public OrderRepository(FertilityCareDBContext context)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context), "Database context cannot be null.");
-            }
-
             _context = context;
         }
 
