@@ -15,7 +15,7 @@ namespace FertilityCare.UseCase.Mappers
         {
             return new TreatmentServiceDTO
             {
-                Id = treatmentServices.Id,
+                Id = treatmentServices.Id.ToString(),
                 Name = treatmentServices.Name,
                 Description = treatmentServices.Description,
                 Duration = treatmentServices.Duration,
@@ -24,8 +24,8 @@ namespace FertilityCare.UseCase.Mappers
                 Contraindications = treatmentServices.Contraindications,
                 CreatedAt = treatmentServices.CreatedAt.ToString("dd/MM/yyyy HH:mm:ss"),
                 UpdatedAt = treatmentServices.UpdatedAt?.ToString("dd/MM/yyyy HH:mm:ss"),
-                TreatmentSteps = treatmentServices.TreatmentSteps?.Select(x => x.MapToTreatmentStepDTO()).ToList()
-
+                TreatmentSteps = treatmentServices.TreatmentSteps?.Select(x => x.MapToTreatmentStepDTO()).ToList(),
+                EstimatePrice = treatmentServices.EstimatePrice,
             };
         }
     }

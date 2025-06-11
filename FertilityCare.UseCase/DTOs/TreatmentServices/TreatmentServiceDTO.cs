@@ -10,7 +10,7 @@ namespace FertilityCare.UseCase.DTOs.TreatmentServices
 {
     public class TreatmentServiceDTO
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
 
         public string Name { get; set; }
 

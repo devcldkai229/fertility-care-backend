@@ -12,7 +12,7 @@ namespace FertilityCare.WebAPI.Controllers
         private readonly IPublicTreatmentService _publicTreatmentService;
         public TreatmentController(IPublicTreatmentService publicTreatmentService)
         {
-            publicTreatmentService = _publicTreatmentService;
+            _publicTreatmentService = publicTreatmentService;
         }
         [HttpGet]
         public async Task<ActionResult<ApiResponse<IEnumerable<TreatmentServiceDTO>>>> GetAll()
