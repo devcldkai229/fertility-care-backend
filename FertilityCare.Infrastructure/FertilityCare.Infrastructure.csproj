@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FertilityCare.Domain\FertilityCare.Domain.csproj" />
+    <ProjectReference Include="..\Fertilitycare.Share\Fertilitycare.Share.csproj" />
     <ProjectReference Include="..\FertilityCare.UseCase\FertilityCare.UseCase.csproj" />
   </ItemGroup>
 
