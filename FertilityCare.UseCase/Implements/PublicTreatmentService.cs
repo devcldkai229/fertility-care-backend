@@ -14,6 +14,7 @@ namespace FertilityCare.UseCase.Implements
     public class PublicTreatmentService : IPublicTreatmentService
     {
         private readonly ITreatmentServiceRepository _treatmentServiceRepository;
+
         public PublicTreatmentService(ITreatmentServiceRepository treatmentServiceRepository)
         {
             _treatmentServiceRepository = treatmentServiceRepository;

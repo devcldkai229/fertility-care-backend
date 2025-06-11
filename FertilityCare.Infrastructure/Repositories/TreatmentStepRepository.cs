@@ -13,7 +13,9 @@ namespace FertilityCare.Infrastructure.Repositories
 {
     public class TreatmentStepRepository : ITreatmentStepRepository
     {
+
         private readonly FertilityCareDBContext _context;
+
         public TreatmentStepRepository(FertilityCareDBContext context)
         {
             _context = context;

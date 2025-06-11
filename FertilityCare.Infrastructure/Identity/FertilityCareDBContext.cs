@@ -54,7 +54,7 @@ namespace FertilityCare.Infrastructure.Identity
 
         public DbSet<Order> Orders { get; set; }
 
-        public DbSet<OrderStep> TreatmentPlanSteps { get; set; }
+        public DbSet<OrderStep> OrderSteps { get; set; }
 
         public DbSet<Prescription> Prescriptions { get; set; }
 
