@@ -1,4 +1,5 @@
 using FertilityCare.Infrastructure.Identity;
+using FertilityCare.Infrastructure.Repositories;
 using FertilityCare.UseCase.Implements;
 using FertilityCare.UseCase.Interfaces.Repositories;
 using FertilityCare.UseCase.Interfaces.Services;
@@ -20,9 +21,9 @@ namespace FertilityCare.WebAPI
                     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
                            .UseLazyLoadingProxies());
 
-            builder.Services.AddScoped<ITreatmentServiceRepository, ITreatmentServiceRepository>();
+            builder.Services.AddScoped<ITreatmentServiceRepository, TreatmentServiceRepository>();
 
-            builder.Services.AddScoped<ITreatmentStepRepository, ITreatmentStepRepository>();
+            builder.Services.AddScoped<ITreatmentStepRepository, TreatmentStepRepository>();
 
             builder.Services.AddScoped<IPublicTreatmentService, PublicTreatmentService>();
 
