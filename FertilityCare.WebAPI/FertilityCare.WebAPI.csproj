@@ -7,7 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <ProjectReference Include="..\FertilityCare.Infrastructure\FertilityCare.Infrastructure.csproj" />
+    <ProjectReference Include="..\Fertilitycare.Share\Fertilitycare.Share.csproj" />
+    <ProjectReference Include="..\FertilityCare.UseCase\FertilityCare.UseCase.csproj" />
   </ItemGroup>
 
 </Project>
