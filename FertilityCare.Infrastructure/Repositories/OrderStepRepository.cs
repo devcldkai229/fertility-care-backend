@@ -1,6 +1,8 @@
 ﻿using FertilityCare.Domain.Entities;
 using FertilityCare.Infrastructure.Identity;
+using FertilityCare.Shared.Exceptions;
 using FertilityCare.UseCase.Interfaces.Repositories;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +22,7 @@ namespace FertilityCare.Infrastructure.Repositories
 
         public async Task DeleteByIdAsync(long id)
         {
-            var orderStep = await _context..FindAsync(id);
+            var orderStep = await _context.OrderSteps.FindAsync(id);
             if (orderStep != null)
             {
                 _context.OrderSteps.Remove(orderStep);
@@ -35,12 +37,24 @@ namespace FertilityCare.Infrastructure.Repositories
 
         public async Task<OrderStep> FindByIdAsync(long id)
         {
-            return await _context.OrderSteps.FindAsync(id);
+            var result = await _context.OrderSteps.FirstOrDefaultAsync(x => x.Id == id);
+            if (result == null)
+            {
+                throw new NotFoundException($"OrderStep with ID {id} not found.");
+            }
+
+            return result;
         }
 
         public async Task<bool> IsExistAsync(long id)
         {
-            return await _context.OrderSteps.AnyAsync(os => os.Id == id);
+            var result =  await _context.OrderSteps.FirstOrDefaultAsync(os => os.Id == id);
+            if (result is null)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public async Task<OrderStep> SaveAsync(OrderStep entity)

@@ -1,3 +1,9 @@
+using FertilityCare.Infrastructure.Identity;
+using FertilityCare.UseCase.Implements;
+using FertilityCare.UseCase.Interfaces.Repositories;
+using FertilityCare.UseCase.Interfaces.Services;
+using Microsoft.EntityFrameworkCore;
+
 namespace FertilityCare.WebAPI
 {
     public class Program
@@ -9,6 +15,16 @@ namespace FertilityCare.WebAPI
             // Add services to the container.
 
             builder.Services.AddControllers();
+
+            builder.Services.AddDbContext<FertilityCareDBContext>(options =>
+                    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+                           .UseLazyLoadingProxies());
+
+            builder.Services.AddScoped<ITreatmentServiceRepository, ITreatmentServiceRepository>();
+
+            builder.Services.AddScoped<ITreatmentStepRepository, ITreatmentStepRepository>();
+
+            builder.Services.AddScoped<IPublicTreatmentService, PublicTreatmentService>();
 
             var app = builder.Build();
 
