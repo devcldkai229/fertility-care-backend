@@ -10,7 +10,7 @@ namespace FertilityCare.UseCase.Implements
 {
     public class OrderStepService : IOrderStepService
     {
-        public Task<OrderStepDTO> GetAllStepsByOrderIdAsync(Guid orderId)
+        public async Task<OrderStepDTO> GetAllStepsByOrderIdAsync(Guid orderId)
         {
             throw new NotImplementedException();
         }

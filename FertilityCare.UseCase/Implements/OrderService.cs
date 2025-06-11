@@ -14,27 +14,35 @@ namespace FertilityCare.UseCase.Implements
 
         private readonly IOrderRepository _orderRepository;
 
-        public OrderService(IOrderRepository orderRepository)
+        private readonly IAppointmentRepository _appointmentRepository;
+
+        private readonly IOrderStepRepository _stepRepository;
+
+        public OrderService(IOrderRepository orderRepository, 
+            IAppointmentRepository appointmentRepository, 
+            IOrderStepRepository stepRepository)
         {
             _orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository), "Order repository cannot be null.");
+            _appointmentRepository = appointmentRepository;
+            _stepRepository = stepRepository;
         }
 
-        public Task<IEnumerable<OrderDTO>> GetOrderByDoctorIdAsync(Guid doctorId)
+        public async Task<IEnumerable<OrderDTO>> GetOrderByDoctorIdAsync(Guid doctorId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<OrderDTO> GetOrderByIdAsync(Guid orderId)
+        public async Task<OrderDTO> GetOrderByIdAsync(Guid orderId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<OrderDTO>> GetOrderByPatientIdAsync(Guid patientId)
+        public async Task<IEnumerable<OrderDTO>> GetOrderByPatientIdAsync(Guid patientId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<OrderDTO> PlaceOrderAsync(CreateOrderRequestDTO request)
+        public async Task<OrderDTO> PlaceOrderAsync(CreateOrderRequestDTO request)
         {
             throw new NotImplementedException();
         }
