@@ -21,6 +21,10 @@ namespace FertilityCare.WebAPI
                     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
                            .UseLazyLoadingProxies());
 
+            builder.Services.AddScoped<IDoctorService, DoctorService>();
+
+            builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
+
             builder.Services.AddScoped<ITreatmentServiceRepository, TreatmentServiceRepository>();
 
             builder.Services.AddScoped<ITreatmentStepRepository, TreatmentStepRepository>();
