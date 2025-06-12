@@ -18,7 +18,7 @@ namespace FertilityCare.UseCase.DTOs.Appointments
 
         public string? TreatmentServiceId { get; set; }
 
-        public long? OrderStepId { get; set; }
+        public long OrderStepId { get; set; }
 
         public string? BookingEmail { get; set; }
 

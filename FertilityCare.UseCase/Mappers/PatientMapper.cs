@@ -22,7 +22,7 @@ namespace FertilityCare.UseCase.Mappers
                 PartnerFullName = patient.PartnerFullName,
                 PartnerEmail = patient.PartnerEmail,
                 PartnerPhone = patient.PartnerPhone,
-                Profile = patient.UserProfile
+                Profile = patient.UserProfile.MapToProfileDTO()
             };
         }
     }
