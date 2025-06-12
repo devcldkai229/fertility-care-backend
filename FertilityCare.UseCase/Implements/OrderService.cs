@@ -59,28 +59,23 @@ namespace FertilityCare.UseCase.Implements
         // None process the scenario of patient is exist before placing order
         public async Task<OrderDTO> PlaceOrderAsync(CreateOrderRequestDTO request)
         {
-            var userProfile = await _profileRepository.FindByIdAsync(Guid.Parse(request.UserProfileId ?? ""));
+            if (!Guid.TryParse(request.UserProfileId, out var userProfileId))
+                throw new UnauthorizedAccessException("Invalid or missing user profile ID.");
 
-            var treatmentService = await _treatmentSRepository.FindByIdAsync(Guid.Parse(request.TreatmentServiceId));
+            if (!Guid.TryParse(request.DoctorId, out var doctorId))
+                throw new ArgumentException("Invalid doctor ID.");
 
-            var doctor = await _doctorRepository.FindByIdAsync(Guid.Parse(request.DoctorId ?? ""));
+            var userProfile = await _profileRepository.FindByIdAsync(userProfileId)
+                                ?? throw new UnauthorizedAccessException("User not exist to perform this action!");
 
-            var schedule = await _scheduleRepository.FindByIdAsync(request.DoctorScheduleId);
+            var treatmentService = await _treatmentSRepository.FindByIdAsync(Guid.Parse(request.TreatmentServiceId))
+                                     ?? throw new ArgumentException("Treatment service not found!");
 
-            if(userProfile is null)
-            {
-                throw new UnauthorizedAccessException("User not exist to perform this action!");
-            }
+            var doctor = await _doctorRepository.FindByIdAsync(doctorId)
+                           ?? throw new ArgumentException("Doctor not found!");
 
-            if(treatmentService is null)
-            {
-                throw new ArgumentException("Treatment service not found!");
-            }
-
-            if (doctor is null || schedule is null)
-            {
-                throw new ArgumentException("Doctor or Schedule not found!");
-            }
+            var schedule = await _scheduleRepository.FindByIdAsync(request.DoctorScheduleId)
+                             ?? throw new ArgumentException("Schedule not found!");
 
             var appointmentAmount = await _appointmentRepository.CountAppointmentByScheduleId(schedule.Id);
             if (appointmentAmount > schedule.MaxAppointments) 
@@ -99,55 +94,59 @@ namespace FertilityCare.UseCase.Implements
                 PartnerPhone = request.PartnerPhone
             };
 
+            await _patientRepository.SaveAsync(savePatient);
+
             userProfile.FirstName = request.FirstName;
             userProfile.MiddleName = request.MiddleName;
             userProfile.LastName = request.LastName;
             userProfile.DateOfBirth = request.DateOfBirth;
-            userProfile.Gender = request.Gender.Equals(Gender.Female.ToString()) ? Gender.Female : Gender.Male;
+            userProfile.Gender = request.Gender.Equals(Gender.Female.ToString()) 
+                ? Gender.Female 
+                : Gender.Male;
             userProfile.Address = request.Address;
             userProfile.UpdatedAt = DateTime.Now;
 
-            await _patientRepository.SaveAsync(savePatient);
             await _profileRepository.SaveChangeAsync();
 
+            var now = DateTime.Now;
             Order placeOrder = new()
             {
                 PatientId = savePatient.Id,
                 DoctorId = doctor.Id,
                 Status = OrderStatus.InProgress,
-                Note = "#NoData",
+                Note = "",
                 TotalEgg = 0,
                 StartDate = DateOnly.FromDateTime(DateTime.Now),
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now,
+                CreatedAt = now,
+                UpdatedAt = now,
             };
 
             await _orderRepository.SaveAsync(placeOrder);
 
-            List<OrderStep> orderSteps = new();
-            treatmentService.TreatmentSteps?.ToList().ForEach(step =>
-            {
-                OrderStep orderStep = new OrderStep
+            var orderSteps = treatmentService.TreatmentSteps?
+                .OrderBy(step => step.StepOrder)
+                .Select(step => new OrderStep
                 {
                     OrderId = placeOrder.Id,
                     TreatmentStepId = step.Id,
                     Note = "",
                     Status = step.StepOrder == 1 ? StepStatus.InProgress : StepStatus.Planned,
-                    StartDate = step.StepOrder == 1 ? DateOnly.FromDateTime(DateTime.Now) : DateOnly.MinValue,
+                    StartDate = step.StepOrder == 1 ? DateOnly.FromDateTime(now) : DateOnly.MinValue,
                     EndDate = null,
-                    CreatedAt = DateTime.Now,
-                    UpdatedAt = DateTime.Now,
-                };
-
-                orderSteps.Add(orderStep);
-            });
+                    CreatedAt = now,
+                    UpdatedAt = now,
+                }).ToList() ?? new List<OrderStep>();
 
             await _stepRepository.SaveAllAsync(orderSteps);
-            placeOrder.OrderSteps = orderSteps.OrderBy(s => s.TreatmentStep.StepOrder).ToList();
+
+            placeOrder.OrderSteps = orderSteps;
             placeOrder.Doctor = doctor;
             placeOrder.TreatmentService = treatmentService;
             placeOrder.Patient = savePatient;
             await _orderRepository.SaveChangeAsync();
+
+            var firstStep = orderSteps.FirstOrDefault(x => x.Status == StepStatus.InProgress)
+                    ?? throw new InvalidOperationException("No first step found for appointment.");
 
 
             await _appointmentService.PlaceAppointmentWithStartOrderAsync(new CreateAppointmentRequestDTO
@@ -155,8 +154,8 @@ namespace FertilityCare.UseCase.Implements
                 PatientId = savePatient.Id.ToString(),
                 DoctorId = doctor.Id.ToString(),
                 DoctorScheduleId = schedule.Id,
-                OrderStepId = placeOrder.OrderSteps.First(x => x.TreatmentStep.StepOrder == 1).Id,
-                TreatmentServiceId = treatmentService.Id.ToString(),    
+                OrderStepId = firstStep.Id,
+                TreatmentServiceId = treatmentService.Id.ToString(),
                 BookingEmail = request.BookingEmail,
                 BookingPhone = request.BookingPhone,
                 Note = request.Note
