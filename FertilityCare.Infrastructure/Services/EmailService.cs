@@ -31,6 +31,7 @@ namespace FertilityCare.Infrastructure.Services
             var mailMessage = new MailMessage
             {
                 From = new MailAddress(_smtpSettings.Username),
+                
                 Subject = subject,
                 Body = body,
                 IsBodyHtml = true
