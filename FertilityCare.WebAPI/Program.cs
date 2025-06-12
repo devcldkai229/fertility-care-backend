@@ -37,6 +37,15 @@ namespace FertilityCare.WebAPI
 
             builder.Services.AddScoped<IPublicTreatmentService, PublicTreatmentService>();
 
+            builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+
+            builder.Services.AddScoped<IPrescriptionRepository, PrescriptionRepository>();
+
+            builder.Services.AddScoped<IPrescriptionService, PrescriptionService>();
+
+            builder.Services.AddScoped<IPatientService, PatientService>();
+
+            builder.Services.AddScoped<IPatientRepository, PatientRepository>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

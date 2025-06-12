@@ -1,4 +1,5 @@
 ﻿using FertilityCare.Domain.Entities;
+using FertilityCare.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,8 @@ namespace FertilityCare.UseCase.Interfaces.Repositories
     {
 
         Task<int> CountAppointmentByScheduleId(long scheduleId);
+
+        Task<IEnumerable<Appointment>> FindAllByStepIdAsync(long stepId);
 
     }
 }

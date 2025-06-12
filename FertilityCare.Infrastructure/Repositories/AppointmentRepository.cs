@@ -1,4 +1,5 @@
 ﻿using FertilityCare.Domain.Entities;
+using FertilityCare.Domain.Enums;
 using FertilityCare.Infrastructure.Identity;
 using FertilityCare.Shared.Exceptions;
 using FertilityCare.UseCase.Interfaces.Repositories;
@@ -39,6 +40,11 @@ namespace FertilityCare.Infrastructure.Repositories
         public async Task<IEnumerable<Appointment>> FindAllAsync()
         {
             return await _context.Appointments.ToListAsync();
+        }
+
+        public async Task<IEnumerable<Appointment>> FindAllByStepIdAsync(long stepId)
+        {
+            return await _context.Appointments.Where(x => x.OrderStepId == stepId).ToListAsync();
         }
 
         public async Task<Appointment> FindByIdAsync(Guid id)

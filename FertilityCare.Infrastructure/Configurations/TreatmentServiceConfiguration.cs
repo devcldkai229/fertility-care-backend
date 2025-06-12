@@ -49,5 +49,10 @@ public class TreatmentServiceConfiguration : IEntityTypeConfiguration<TreatmentS
         builder.Property(t => t.UpdatedAt)
                .HasColumnType("DATETIME");
 
+        builder.HasMany(t => t.TreatmentSteps)
+                .WithOne(x => x.TreatmentService)
+                .HasForeignKey(ts => ts.TreatmentServiceId)
+                .OnDelete(DeleteBehavior.Cascade);
+
     }
 }

@@ -10,9 +10,11 @@ namespace FertilityCare.UseCase.Interfaces.Services
     public interface IAppointmentService
     {
 
+        Task<AppointmentDTO> MarkStatusAppointmentAsync(Guid appointmentId, string status);
+
         Task<AppointmentDTO> PlaceAppointmentWithStartOrderAsync(CreateAppointmentRequestDTO request);
 
-        Task<IEnumerable<AppointmentDTO>> GetAppointmentsByStepIdAsync(Guid stepId);
+        Task<IEnumerable<AppointmentDTO>> GetAppointmentsByStepIdAsync(Guid orderId, long stepId);
 
         Task<AppointmentDTO> PlaceAppointmentByStepIdAsync(Guid stepId, CreateAppointmentRequestDTO request);
 
