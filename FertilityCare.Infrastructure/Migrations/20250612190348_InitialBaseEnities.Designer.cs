@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FertilityCare.Infrastructure.Migrations
 {
     [DbContext(typeof(FertilityCareDBContext))]
-    [Migration("20250612174311_AddReferencesTreatmentService")]
-    partial class AddReferencesTreatmentService
+    [Migration("20250612190348_InitialBaseEnities")]
+    partial class InitialBaseEnities
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -805,17 +805,12 @@ namespace FertilityCare.Infrastructure.Migrations
                     b.Property<Guid>("TreatmentServiceId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("TreatmentServiceId1")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
                     b.HasIndex("TreatmentServiceId");
-
-                    b.HasIndex("TreatmentServiceId1");
 
                     b.ToTable("TreatmentStep", (string)null);
                 });
@@ -1278,14 +1273,10 @@ namespace FertilityCare.Infrastructure.Migrations
             modelBuilder.Entity("FertilityCare.Domain.Entities.TreatmentStep", b =>
                 {
                     b.HasOne("FertilityCare.Domain.Entities.TreatmentService", "TreatmentService")
-                        .WithMany()
+                        .WithMany("TreatmentSteps")
                         .HasForeignKey("TreatmentServiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("FertilityCare.Domain.Entities.TreatmentService", null)
-                        .WithMany("TreatmentSteps")
-                        .HasForeignKey("TreatmentServiceId1");
 
                     b.Navigation("TreatmentService");
                 });
