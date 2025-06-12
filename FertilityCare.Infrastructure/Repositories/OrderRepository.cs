@@ -42,6 +42,11 @@ namespace FertilityCare.Infrastructure.Repositories
             return result;
         }
 
+        public async Task<IEnumerable<Order>> FindAllByDoctorIdAsync(Guid doctorId)
+        {
+           return await _context.Orders.Where(x => x.DoctorId == doctorId).ToListAsync();
+        }
+
         public async Task<bool> IsExistAsync(Guid id)
         {
             var orderExists = await _context.Orders.FirstOrDefaultAsync(x => x.Id == id);
@@ -68,6 +73,11 @@ namespace FertilityCare.Infrastructure.Repositories
         public Task<Order> UpdateAsync(Order entity)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<Order>> FindAllByPatientIdAsync(Guid patientId)
+        {
+            return await _context.Orders.Where(x => x.PatientId == patientId).ToListAsync();
         }
     }
 }

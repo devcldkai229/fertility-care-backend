@@ -69,13 +69,13 @@ namespace FertilityCare.UseCase.Implements
                                 ?? throw new UnauthorizedAccessException("User not exist to perform this action!");
 
             var treatmentService = await _treatmentSRepository.FindByIdAsync(Guid.Parse(request.TreatmentServiceId))
-                                     ?? throw new ArgumentException("Treatment service not found!");
+                                     ?? throw new NotFoundException("Treatment service not found!");
 
             var doctor = await _doctorRepository.FindByIdAsync(doctorId)
-                           ?? throw new ArgumentException("Doctor not found!");
+                           ?? throw new NotFoundException("Doctor not found!");
 
             var schedule = await _scheduleRepository.FindByIdAsync(request.DoctorScheduleId)
-                             ?? throw new ArgumentException("Schedule not found!");
+                             ?? throw new NotFoundException("Schedule not found!");
 
             var appointmentAmount = await _appointmentRepository.CountAppointmentByScheduleId(schedule.Id);
             if (appointmentAmount > schedule.MaxAppointments) 
@@ -166,20 +166,28 @@ namespace FertilityCare.UseCase.Implements
 
         public async Task<IEnumerable<OrderDTO>> GetOrderByDoctorIdAsync(Guid doctorId)
         {
-            throw new NotImplementedException();
+            var doctor = await _doctorRepository.FindByIdAsync(doctorId)
+                          ?? throw new ArgumentException("Doctor not found!");
+
+            var orders = await _orderRepository.FindAllByDoctorIdAsync(doctorId);
+            return orders.Select(x => x.MapToOderDTO());
         }
 
         public async Task<OrderDTO> GetOrderByIdAsync(Guid orderId)
         {
-            throw new NotImplementedException();
+            var order = await _orderRepository.FindByIdAsync(orderId);
+
+            return order.MapToOderDTO();
         }
 
         public async Task<IEnumerable<OrderDTO>> GetOrderByPatientIdAsync(Guid patientId)
         {
-            throw new NotImplementedException();
-        }
+            var patient = await _patientRepository.FindByIdAsync(patientId)
+                ?? throw new NotFoundException("Patient not found!");
 
-        
+            var order = await _orderRepository.FindAllByPatientIdAsync(patientId);
+            return order.Select(x => x.MapToOderDTO());
+        }
 
     }
 }

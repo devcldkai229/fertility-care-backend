@@ -9,6 +9,10 @@ namespace FertilityCare.UseCase.Interfaces.Repositories
 {
     public interface IOrderRepository : IBaseRepository<Order, Guid>
     {
+        Task<IEnumerable<Order>> FindAllByDoctorIdAsync(Guid doctorId);
+
+        Task<IEnumerable<Order>> FindAllByPatientIdAsync(Guid patientId);
+
         Task SaveChangeAsync();
     }
 }
