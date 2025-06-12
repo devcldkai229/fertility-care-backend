@@ -32,7 +32,7 @@ namespace FertilityCare.Infrastructure.Repositories
 
         public async Task<IEnumerable<TreatmentService>> FindAllAsync()
         {
-            return await _context.TreatmentServices.ToListAsync();
+            return await _context.TreatmentServices.Include(x => x.TreatmentSteps).ToListAsync();
         }
 
         public async Task<TreatmentService> FindByIdAsync(Guid id)

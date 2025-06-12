@@ -5,12 +5,12 @@
 namespace FertilityCare.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class AddReferencesTreatmentService : Migration
+    public partial class AddRefs : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            
+
         }
 
         /// <inheritdoc />
