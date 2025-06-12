@@ -10,6 +10,6 @@ namespace FertilityCare.UseCase.Interfaces.Services
     public interface IPublicTreatmentService
     {
         Task<IEnumerable<TreatmentServiceDTO>> GetAllAsync();
-
+        Task<TreatmentServiceDTO> UpdateAsync(TreatmentServiceDTO treatmentServiceDTO);
     }
 }
