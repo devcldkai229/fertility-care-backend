@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FertilityCare.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class BaseEntitiesConfigurations : Migration
+    public partial class InitialBaseEnities : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -154,8 +154,7 @@ namespace FertilityCare.Infrastructure.Migrations
                     EstimatedDurationDays = table.Column<int>(type: "int", nullable: true),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    TreatmentServiceId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -166,11 +165,6 @@ namespace FertilityCare.Infrastructure.Migrations
                         principalTable: "TreatmentService",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_TreatmentStep_TreatmentService_TreatmentServiceId1",
-                        column: x => x.TreatmentServiceId1,
-                        principalTable: "TreatmentService",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -826,11 +820,6 @@ namespace FertilityCare.Infrastructure.Migrations
                 name: "IX_TreatmentStep_TreatmentServiceId",
                 table: "TreatmentStep",
                 column: "TreatmentServiceId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TreatmentStep_TreatmentServiceId1",
-                table: "TreatmentStep",
-                column: "TreatmentServiceId1");
         }
 
         /// <inheritdoc />

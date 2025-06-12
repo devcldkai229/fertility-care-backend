@@ -66,6 +66,12 @@ namespace FertilityCare.UseCase.Implements
             return true;
         }
 
+        public async Task<IEnumerable<DoctorScheduleDTO>> FindAllSchedulesAsync()
+        {
+            var all = await _scheduleRepository.FindAllAsync();
+            return all.Select(s => s.MapToScheduleDTO());
+        }
+
         public async Task<IEnumerable<DoctorScheduleDTO>> GetAllSchedulesAsync(Guid doctorId)
         {
             var all = await _scheduleRepository.FindAllAsync();

@@ -17,6 +17,8 @@ namespace FertilityCare.UseCase.Interfaces.Services
 
         Task<bool> DeleteScheduleAsync(long scheduleId);
 
+        Task<IEnumerable<DoctorScheduleDTO>> FindAllSchedulesAsync();
+
         Task<IEnumerable<DoctorScheduleDTO>> GetAllSchedulesAsync(Guid doctorId);
 
         Task<DoctorScheduleDTO?> GetScheduleByIdAsync(long scheduleId);
