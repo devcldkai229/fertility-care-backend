@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace FertilityCare.UseCase.Interfaces.Repositories
 {
-    public interface IOrderStepRepository : IBaseRepository<OrderStep, long>
+    public interface IUserProfileRepository : IBaseRepository<UserProfile, Guid>
     {
-        Task<IEnumerable<OrderStep>> SaveAllAsync(IEnumerable<OrderStep> orderSteps);
 
+        public Task SaveChangeAsync();
     }
 }

@@ -16,9 +16,7 @@ namespace FertilityCare.UseCase.Implements
 
         private readonly IOrderStepRepository _stepRepository;
 
-        private readonly IOrderRepository _orderRepository;
-
-        public 
+        private readonly IOrderRepository _orderRepository; 
 
         public AppointmentService(IAppointmentRepository appointmentRepository)
         {
@@ -35,7 +33,7 @@ namespace FertilityCare.UseCase.Implements
             throw new NotImplementedException();
         }
 
-        public async Task<AppointmentDTO> PlaceAppointmentFirstTimeAsync(CreateAppointmentRequestDTO request)
+        public async Task<AppointmentDTO> PlaceAppointmentWithStartOrderAsync(CreateAppointmentRequestDTO request)
         {
             throw new NotImplementedException();
         }

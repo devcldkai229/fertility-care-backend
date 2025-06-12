@@ -1,4 +1,7 @@
-﻿using FertilityCare.UseCase.DTOs.Orders;
+﻿using FertilityCare.Domain.Entities;
+using FertilityCare.Domain.Enums;
+using FertilityCare.UseCase.DTOs.Orders;
+using FertilityCare.UseCase.DTOs.Appointments;
 using FertilityCare.UseCase.Interfaces.Repositories;
 using FertilityCare.UseCase.Interfaces.Services;
 using System;
@@ -6,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FertilityCare.UseCase.Mappers;
 
 namespace FertilityCare.UseCase.Implements
 {
@@ -14,17 +18,139 @@ namespace FertilityCare.UseCase.Implements
 
         private readonly IOrderRepository _orderRepository;
 
-        private readonly IAppointmentRepository _appointmentRepository;
-
         private readonly IOrderStepRepository _stepRepository;
 
+        private readonly IPatientRepository _patientRepository;
+
+        private readonly IDoctorRepository _doctorRepository;
+
+        private readonly IDoctorScheduleRepository _scheduleRepository;
+
+        private readonly IUserProfileRepository _profileRepository;
+
+        private readonly ITreatmentServiceRepository _treatmentSRepository;
+
+        private readonly IAppointmentService _appointmentService;
+
         public OrderService(IOrderRepository orderRepository, 
-            IAppointmentRepository appointmentRepository, 
-            IOrderStepRepository stepRepository)
+            IOrderStepRepository stepRepository, 
+            IPatientRepository patientRepository, 
+            IDoctorRepository doctorRepository, 
+            IDoctorScheduleRepository scheduleRepository,
+            IUserProfileRepository userProfileRepository,
+            ITreatmentServiceRepository treatmentServiceRepository,
+            IAppointmentService appointmentService)
         {
-            _orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository), "Order repository cannot be null.");
-            _appointmentRepository = appointmentRepository;
+            _orderRepository = orderRepository;
             _stepRepository = stepRepository;
+            _patientRepository = patientRepository;
+            _doctorRepository = doctorRepository;
+            _scheduleRepository = scheduleRepository;
+            _profileRepository = userProfileRepository;
+            _treatmentSRepository = treatmentServiceRepository;
+            _appointmentService = appointmentService;
+        }
+
+        // None process the scenario of patient is exist before placing order
+        public async Task<OrderDTO> PlaceOrderAsync(CreateOrderRequestDTO request)
+        {
+            var userProfile = await _profileRepository.FindByIdAsync(Guid.Parse(request.UserProfileId ?? ""));
+
+            var treatmentService = await _treatmentSRepository.FindByIdAsync(Guid.Parse(request.TreatmentServiceId));
+
+            var doctor = await _doctorRepository.FindByIdAsync(Guid.Parse(request.DoctorId ?? ""));
+
+            var schedule = await _scheduleRepository.FindByIdAsync(request.DoctorScheduleId);
+
+            if(userProfile is null)
+            {
+                throw new UnauthorizedAccessException("User not exist to perform this action!");
+            }
+
+            if(treatmentService is null)
+            {
+                throw new ArgumentException("Treatment service not found!");
+            }
+
+            if (doctor is null || schedule is null)
+            {
+                throw new ArgumentException("Doctor or Schedule not found!");
+            }
+
+            Patient savePatient = new Patient
+            {
+                MedicalHistory = request.MedicalHistory,
+                UserProfileId = Guid.Parse(request.UserProfileId ?? ""),
+                Note = request.Note,
+                PartnerFullName = request.PartnerFullName,
+                PartnerEmail = request.PartnerEmail,
+                PartnerPhone = request.PartnerPhone
+            };
+
+            userProfile.FirstName = request.FirstName;
+            userProfile.MiddleName = request.MiddleName;
+            userProfile.LastName = request.LastName;
+            userProfile.DateOfBirth = request.DateOfBirth;
+            userProfile.Gender = request.Gender.Equals(Gender.Female.ToString()) ? Gender.Female : Gender.Male;
+            userProfile.Address = request.Address;
+            userProfile.UpdatedAt = DateTime.Now;
+
+            await _patientRepository.SaveAsync(savePatient);
+            await _profileRepository.SaveChangeAsync();
+
+            Order placeOrder = new()
+            {
+                PatientId = savePatient.Id,
+                DoctorId = doctor.Id,
+                Status = OrderStatus.InProgress,
+                Note = "#NoData",
+                TotalEgg = 0,
+                StartDate = DateOnly.FromDateTime(DateTime.Now),
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now,
+            };
+
+            await _orderRepository.SaveAsync(placeOrder);
+
+            List<OrderStep> orderSteps = new();
+            treatmentService.TreatmentSteps?.ToList().ForEach(step =>
+            {
+                OrderStep orderStep = new OrderStep
+                {
+                    OrderId = placeOrder.Id,
+                    TreatmentStepId = step.Id,
+                    Note = "",
+                    Status = step.StepOrder == 1 ? StepStatus.InProgress : StepStatus.Planned,
+                    StartDate = step.StepOrder == 1 ? DateOnly.FromDateTime(DateTime.Now) : DateOnly.MinValue,
+                    EndDate = null,
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now,
+                };
+
+                orderSteps.Add(orderStep);
+            });
+
+            await _stepRepository.SaveAllAsync(orderSteps);
+            placeOrder.OrderSteps = orderSteps.OrderBy(s => s.TreatmentStep.StepOrder).ToList();
+            placeOrder.Doctor = doctor;
+            placeOrder.TreatmentService = treatmentService;
+            placeOrder.Patient = savePatient;
+            await _orderRepository.SaveChangeAsync();
+
+
+            await _appointmentService.PlaceAppointmentWithStartOrderAsync(new CreateAppointmentRequestDTO
+            {
+                PatientId = savePatient.Id.ToString(),
+                DoctorId = doctor.Id.ToString(),
+                DoctorScheduleId = schedule.Id,
+                OrderStepId = placeOrder.OrderSteps.First(x => x.TreatmentStep.StepOrder == 1).Id,
+                TreatmentServiceId = treatmentService.Id.ToString(),    
+                BookingEmail = request.BookingEmail,
+                BookingPhone = request.BookingPhone,
+                Note = request.Note
+            });
+
+            return placeOrder.MapToOderDTO();
         }
 
         public async Task<IEnumerable<OrderDTO>> GetOrderByDoctorIdAsync(Guid doctorId)
@@ -42,10 +168,7 @@ namespace FertilityCare.UseCase.Implements
             throw new NotImplementedException();
         }
 
-        public async Task<OrderDTO> PlaceOrderAsync(CreateOrderRequestDTO request)
-        {
-            throw new NotImplementedException();
-        }
+        
 
     }
 }

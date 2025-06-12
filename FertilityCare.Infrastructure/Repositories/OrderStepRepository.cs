@@ -57,6 +57,13 @@ namespace FertilityCare.Infrastructure.Repositories
             return true;
         }
 
+        public async Task<IEnumerable<OrderStep>> SaveAllAsync(IEnumerable<OrderStep> orderSteps)
+        {
+            await _context.OrderSteps.AddRangeAsync(orderSteps);
+            await _context.SaveChangesAsync();
+            return orderSteps;
+        }
+
         public async Task<OrderStep> SaveAsync(OrderStep entity)
         {
             _context.OrderSteps.Add(entity);

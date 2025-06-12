@@ -9,6 +9,6 @@ namespace FertilityCare.UseCase.Interfaces.Repositories
 {
     public interface IOrderRepository : IBaseRepository<Order, Guid>
     {
-        
+        Task SaveChangeAsync();
     }
 }
