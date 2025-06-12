@@ -24,5 +24,19 @@ namespace FertilityCare.UseCase.Mappers
                 UpdatedAt = service.UpdatedAt?.ToString("dd/MM/yyyy HH:mm:ss"),
             };
         }
+        public static TreatmentStep MapToTreatmentStep(this TreatmentStepDTO serviceDTO)
+        {
+            return new TreatmentStep()
+            {
+                Id = long.Parse(serviceDTO.Id),
+                StepName = serviceDTO.StepName,
+                Description = serviceDTO.Description,
+                StepOrder = serviceDTO.StepOrder,
+                EstimatedDurationDays = serviceDTO.EstimatedDurationDays,
+                Amount = serviceDTO.Amount,
+                CreatedAt = DateTime.Parse(serviceDTO.CreatedAt),
+                UpdatedAt = string.IsNullOrEmpty(serviceDTO.UpdatedAt) ? null : DateTime.Parse(serviceDTO.UpdatedAt),
+            };
+        }
     }
 }

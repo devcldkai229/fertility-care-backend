@@ -18,6 +18,8 @@ namespace FertilityCare.UseCase.Implements
 
         private readonly IOrderRepository _orderRepository; 
 
+        //public 
+
         public AppointmentService(IAppointmentRepository appointmentRepository)
         {
             _appointmentRepository = appointmentRepository;

@@ -28,5 +28,22 @@ namespace FertilityCare.UseCase.Mappers
                 EstimatePrice = treatmentServices.EstimatePrice,
             };
         }
+        public static TreatmentService MapToTreatmentService(this TreatmentServiceDTO treatmentServiceDTO)
+        {
+            return new TreatmentService
+            {
+                Id = Guid.Parse(treatmentServiceDTO.Id),
+                Name = treatmentServiceDTO.Name,
+                Description = treatmentServiceDTO.Description,
+                Duration = treatmentServiceDTO.Duration,
+                SuccessRate = treatmentServiceDTO.SuccessRate,
+                RecommendedFor = treatmentServiceDTO.RecommendedFor,
+                Contraindications = treatmentServiceDTO.Contraindications,
+                CreatedAt = DateTime.Parse(treatmentServiceDTO.CreatedAt),
+                UpdatedAt = string.IsNullOrEmpty(treatmentServiceDTO.UpdatedAt) ? null : DateTime.Parse(treatmentServiceDTO.UpdatedAt),
+                EstimatePrice = treatmentServiceDTO.EstimatePrice,
+                TreatmentSteps = treatmentServiceDTO.TreatmentSteps?.Select(x => x.MapToTreatmentStep()).ToList(),
+            };
+        }
     }
 }

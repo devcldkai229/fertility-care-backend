@@ -14,7 +14,6 @@ namespace FertilityCare.UseCase.Implements
     public class PublicTreatmentService : IPublicTreatmentService
     {
         private readonly ITreatmentServiceRepository _treatmentServiceRepository;
-
         public PublicTreatmentService(ITreatmentServiceRepository treatmentServiceRepository)
         {
             _treatmentServiceRepository = treatmentServiceRepository;
@@ -24,6 +23,12 @@ namespace FertilityCare.UseCase.Implements
         {
             var result = await _treatmentServiceRepository.FindAllAsync();
             return result.Select(x => x.MapToTreatmentServiceDTO()).ToList();
+        }
+
+        public async Task<TreatmentServiceDTO> UpdateAsync(TreatmentServiceDTO treatmentServiceDTO)
+        {
+            var result = await _treatmentServiceRepository.UpdateAsync(treatmentServiceDTO.MapToTreatmentService());
+            return result.MapToTreatmentServiceDTO();
         }
     }
 }
