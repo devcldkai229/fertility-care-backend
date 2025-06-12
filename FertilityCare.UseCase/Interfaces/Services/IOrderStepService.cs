@@ -10,7 +10,8 @@ namespace FertilityCare.UseCase.Interfaces.Services
     public interface IOrderStepService
     {
 
-        Task<OrderStepDTO> GetAllStepsByOrderIdAsync(Guid orderId);
+        Task<IEnumerable<OrderStepDTO>> GetAllStepsByOrderIdAsync(Guid orderId);
 
+        Task<(OrderStepDTO, string)> MarkStatusByStepIdAsync(long stepId, string status);
     }
 }

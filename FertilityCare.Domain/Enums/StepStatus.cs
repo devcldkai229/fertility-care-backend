@@ -14,7 +14,5 @@ public enum StepStatus
 
     Completed,
 
-    Skipped,      
-
     Failed    
 }

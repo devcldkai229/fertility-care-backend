@@ -35,6 +35,11 @@ namespace FertilityCare.Infrastructure.Repositories
             return await _context.OrderSteps.ToListAsync();
         }
 
+        public async Task<IEnumerable<OrderStep>> FindAllByOrderIdAsync(Guid orderId)
+        {
+            return await _context.OrderSteps.Where(os => os.OrderId == orderId).ToListAsync();
+        }
+
         public async Task<OrderStep> FindByIdAsync(long id)
         {
             var result = await _context.OrderSteps.FirstOrDefaultAsync(x => x.Id == id);
@@ -69,6 +74,11 @@ namespace FertilityCare.Infrastructure.Repositories
             _context.OrderSteps.Add(entity);
             await _context.SaveChangesAsync();
             return entity;
+        }
+
+        public async Task SaveChangeAsync()
+        {
+            await _context.SaveChangesAsync();
         }
 
         public async Task<OrderStep> UpdateAsync(OrderStep entity)
