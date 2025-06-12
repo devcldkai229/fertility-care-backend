@@ -9,6 +9,6 @@ namespace FertilityCare.UseCase.Interfaces.Repositories
 {
     public interface ISlotRepository : IBaseRepository<Slot, long>
     {
-
+        Task<Slot?> FindSlotAsync(TimeOnly startTime, TimeOnly endTime);
     }
 }

@@ -2,6 +2,7 @@
 using FertilityCare.Infrastructure.Identity;
 using FertilityCare.Shared.Exceptions;
 using FertilityCare.UseCase.Interfaces.Repositories;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,6 +38,12 @@ namespace FertilityCare.Infrastructure.Repositories
                 throw new NotFoundException($"Slot with ID {id} not found.");
             }
             return loadedSlot;
+        }
+
+        public async Task<Slot?> FindSlotAsync(TimeOnly startTime, TimeOnly endTime)
+        {
+            return await _context.Slots
+                .FirstOrDefaultAsync(s => s.StartTime == startTime && s.EndTime == endTime);
         }
 
         public async Task<bool> IsExistAsync(long id)
