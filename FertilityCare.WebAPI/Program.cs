@@ -23,7 +23,13 @@ namespace FertilityCare.WebAPI
 
             builder.Services.AddScoped<IDoctorService, DoctorService>();
 
+            builder.Services.AddScoped<IDoctorScheduleService, DoctorScheduleService>();
+
+            builder.Services.AddScoped<IDoctorScheduleRepository, DoctorScheduleRepository>();
+
             builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
+
+            builder.Services.AddScoped<ISlotRepository, SlotRepository>();
 
             builder.Services.AddScoped<ITreatmentServiceRepository, TreatmentServiceRepository>();
 

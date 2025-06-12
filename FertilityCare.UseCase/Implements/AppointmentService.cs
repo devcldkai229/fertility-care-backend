@@ -24,8 +24,8 @@ namespace FertilityCare.UseCase.Implements
 
         private readonly IAppointmentReminderRepository _appointmentReminderRepository;
 
-        public AppointmentService(IAppointmentRepository appointmentRepository, 
-            IOrderStepRepository orderStepRepository, 
+        public AppointmentService(IAppointmentRepository appointmentRepository,
+            IOrderStepRepository orderStepRepository,
             IOrderRepository orderRepository,
             IDoctorScheduleRepository doctorScheduleRepository,
             IAppointmentReminderRepository appointmentReminderRepository)
@@ -74,9 +74,9 @@ namespace FertilityCare.UseCase.Implements
             };
 
             await _appointmentRepository.SaveAsync(appointment);
-                   
-            
-        
+
+
+
 
 
 
