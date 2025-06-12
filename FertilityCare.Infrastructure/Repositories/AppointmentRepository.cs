@@ -21,6 +21,11 @@ namespace FertilityCare.Infrastructure.Repositories
             _context = context ?? throw new ArgumentNullException(nameof(context), "Database context cannot be null.");
         }
 
+        public async Task<int> CountAppointmentByScheduleId(long scheduleId)
+        {
+            return await _context.Appointments.CountAsync(x => x.DoctorScheduleId == scheduleId);
+        }
+
         public async Task DeleteByIdAsync(Guid id)
         {
             var appointment = await _context.Appointments.FindAsync(id);

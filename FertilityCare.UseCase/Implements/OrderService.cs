@@ -4,6 +4,7 @@ using FertilityCare.UseCase.DTOs.Orders;
 using FertilityCare.UseCase.DTOs.Appointments;
 using FertilityCare.UseCase.Interfaces.Repositories;
 using FertilityCare.UseCase.Interfaces.Services;
+using FertilityCare.Shared.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,8 @@ namespace FertilityCare.UseCase.Implements
     {
 
         private readonly IOrderRepository _orderRepository;
+
+        private readonly IAppointmentRepository _appointmentRepository;
 
         private readonly IOrderStepRepository _stepRepository;
 
@@ -39,7 +42,8 @@ namespace FertilityCare.UseCase.Implements
             IDoctorScheduleRepository scheduleRepository,
             IUserProfileRepository userProfileRepository,
             ITreatmentServiceRepository treatmentServiceRepository,
-            IAppointmentService appointmentService)
+            IAppointmentService appointmentService,
+            IAppointmentRepository appointmentRepository)
         {
             _orderRepository = orderRepository;
             _stepRepository = stepRepository;
@@ -49,6 +53,7 @@ namespace FertilityCare.UseCase.Implements
             _profileRepository = userProfileRepository;
             _treatmentSRepository = treatmentServiceRepository;
             _appointmentService = appointmentService;
+            _appointmentRepository = appointmentRepository;
         }
 
         // None process the scenario of patient is exist before placing order
@@ -76,6 +81,13 @@ namespace FertilityCare.UseCase.Implements
             {
                 throw new ArgumentException("Doctor or Schedule not found!");
             }
+
+            var appointmentAmount = await _appointmentRepository.CountAppointmentByScheduleId(schedule.Id);
+            if (appointmentAmount > schedule.MaxAppointments) 
+            {
+                throw new AppointmentSlotLimitExceededException(
+                    $"The maximum number of appointments for this schedule has been reached. Please choose another time slot or contact support for assistance.");
+            }   
 
             Patient savePatient = new Patient
             {

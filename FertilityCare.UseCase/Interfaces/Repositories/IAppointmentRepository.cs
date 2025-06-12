@@ -9,5 +9,8 @@ namespace FertilityCare.UseCase.Interfaces.Repositories
 {
     public interface IAppointmentRepository : IBaseRepository<Appointment, Guid>
     {
+
+        Task<int> CountAppointmentByScheduleId(long scheduleId);
+
     }
 }
