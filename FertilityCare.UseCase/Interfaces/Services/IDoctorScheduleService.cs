@@ -25,6 +25,6 @@ namespace FertilityCare.UseCase.Interfaces.Services
 
         Task<DoctorScheduleDTO?> GetScheduleByIdAsync(long scheduleId);
 
-        Task<PagedResult<DoctorScheduleDTO>> GetSchedulesPagedAsync(PaginationRequestDTO request);
+        Task<IEnumerable<DoctorScheduleDTO>> GetSchedulesPagedAsync(PaginationRequestDTO request);
     }
 }

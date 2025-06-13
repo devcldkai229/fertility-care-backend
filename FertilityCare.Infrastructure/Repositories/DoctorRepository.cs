@@ -84,23 +84,16 @@ namespace FertilityCare.Infrastructure.Repositories
             return _context.Doctors.Include(d => d.UserProfile).AsQueryable();
         }
 
-        public async Task<PagedResult<Doctor>> GetPagedAsync(int pageNumber, int pageSize)
+        public async Task<IEnumerable<Doctor>> GetPagedAsync(int pageNumber, int pageSize)
         {
             var query = _context.Doctors.AsQueryable();
 
-            var totalItems = await query.CountAsync();
             var items = await query
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
 
-            return new PagedResult<Doctor>
-            {
-                Items = items,
-                TotalItems = totalItems,
-                PageNumber = pageNumber,
-                PageSize = pageSize
-            };
+            return items;
         }
 
     }

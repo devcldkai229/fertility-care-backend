@@ -87,25 +87,17 @@ namespace FertilityCare.UseCase.Implements
             return result?.MapToScheduleDTO();
         }
 
-        public async Task<PagedResult<DoctorScheduleDTO>> GetSchedulesPagedAsync(PaginationRequestDTO request)
+        public async Task<IEnumerable<DoctorScheduleDTO>> GetSchedulesPagedAsync(PaginationRequestDTO request)
         {
             var query = await _scheduleRepository.FindAllQueryableAsync();
 
-            var totalItems = query.Count();
 
-            var pagedItems = query
-                .Skip((request.PageNumber - 1) * request.PageSize)
+            return query
+                .Skip((request.Page - 1) * request.PageSize)
                 .Take(request.PageSize)
                 .Select(x => x.MapToScheduleDTO())
                 .ToList();
-
-            return new PagedResult<DoctorScheduleDTO>
-            {
-                Items = pagedItems,
-                PageNumber = request.PageNumber,
-                PageSize = request.PageSize,
-                TotalItems = totalItems
-            };
+           
         }
 
 

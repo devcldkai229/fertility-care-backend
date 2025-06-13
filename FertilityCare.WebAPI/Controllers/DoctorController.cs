@@ -19,42 +19,42 @@ namespace FertilityCare.WebAPI.Controllers
                 _doctorService = doctorService;
             }
 
-            [HttpGet]
-            public async Task<ActionResult<ApiResponse<IEnumerable<DoctorDTO>>>> GetAllDoctors()
-            {
-                try
-                {
-                    var result = await _doctorService.GetAllDoctorsAsync();
+            //[HttpGet]
+            //public async Task<ActionResult<ApiResponse<IEnumerable<DoctorDTO>>>> GetAllDoctors()
+            //{
+            //    try
+            //    {
+            //        var result = await _doctorService.GetAllDoctorsAsync();
 
-                    return Ok(new ApiResponse<IEnumerable<DoctorDTO>>
-                    {
-                        StatusCode = 200,
-                        Message = "Fetched successfully.",
-                        Data = result,
-                        ResponsedAt = DateTime.Now
-                    });
-                }
-                catch (NotFoundException e)
-                {
-                    return NotFound(new ApiResponse<object>
-                    {
-                        StatusCode = 404,
-                        Message = e.Message,
-                        Data = null,
-                        ResponsedAt = DateTime.Now
-                    });
-                }
-                catch (Exception e)
-                {
-                    return BadRequest(new ApiResponse<object>
-                    {
-                        StatusCode = 500,
-                        Message = e.Message,
-                        Data = null,
-                        ResponsedAt = DateTime.Now
-                    });
-                }
-            }
+            //        return Ok(new ApiResponse<IEnumerable<DoctorDTO>>
+            //        {
+            //            StatusCode = 200,
+            //            Message = "Fetched successfully.",
+            //            Data = result,
+            //            ResponsedAt = DateTime.Now
+            //        });
+            //    }
+            //    catch (NotFoundException e)
+            //    {
+            //        return NotFound(new ApiResponse<object>
+            //        {
+            //            StatusCode = 404,
+            //            Message = e.Message,
+            //            Data = null,
+            //            ResponsedAt = DateTime.Now
+            //        });
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        return BadRequest(new ApiResponse<object>
+            //        {
+            //            StatusCode = 500,
+            //            Message = e.Message,
+            //            Data = null,
+            //            ResponsedAt = DateTime.Now
+            //        });
+            //    }
+            //}
 
             [HttpGet("{id}")]
             public async Task<ActionResult<ApiResponse<DoctorDTO>>> GetDoctorById(string id)
@@ -93,15 +93,16 @@ namespace FertilityCare.WebAPI.Controllers
                     });
                 }
             }
-        [HttpGet("paged")]
-        public async Task<ActionResult<ApiResponse<PagedResult<DoctorDTO>>>> GetDoctorsPaged(
+
+        [HttpGet]
+        public async Task<ActionResult<ApiResponse<IEnumerable<DoctorDTO>>>> GetDoctorsPaged(
         [FromQuery] PaginationRequestDTO request)
         {
             try
             {
                 var result = await _doctorService.GetDoctorsPagedAsync(request);
 
-                return Ok(new ApiResponse<PagedResult<DoctorDTO>>
+                return Ok(new ApiResponse<IEnumerable<DoctorDTO>>
                 {
                     StatusCode = 200,
                     Message = "Fetched paged result successfully.",

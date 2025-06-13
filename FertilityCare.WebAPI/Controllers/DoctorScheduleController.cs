@@ -204,12 +204,12 @@ namespace FertilityCare.WebAPI.Controllers
             }
         }
         [HttpGet("paged")]
-        public async Task<ActionResult<ApiResponse<PagedResult<DoctorScheduleDTO>>>> GetPagedSchedulesAsync([FromQuery] PaginationRequestDTO request)
+        public async Task<ActionResult<ApiResponse<IEnumerable<DoctorScheduleDTO>>>> GetPagedSchedulesAsync([FromQuery] PaginationRequestDTO request)
         {
             try
             {
                 var result = await _doctorScheduleService.GetSchedulesPagedAsync(request);
-                return Ok(new ApiResponse<PagedResult<DoctorScheduleDTO>>
+                return Ok(new ApiResponse<IEnumerable<DoctorScheduleDTO>>
                 {
                     StatusCode = 200,
                     Message = "Paged schedules fetched successfully.",

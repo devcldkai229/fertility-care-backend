@@ -12,7 +12,7 @@ namespace FertilityCare.UseCase.Interfaces.Repositories
     {
         Task<IQueryable<Doctor>> GetQueryableAsync();
 
-        Task<PagedResult<Doctor>> GetPagedAsync(int pageNumber, int pageSize);
+        Task<IEnumerable<Doctor>> GetPagedAsync(int pageNumber, int pageSize);
 
 
     }
