@@ -1,4 +1,6 @@
-﻿using Fertilitycare.Share.Contents;
+﻿using Fertilitycare.Share.Comon;
+using Fertilitycare.Share.Contents;
+using Fertilitycare.Share.Pagination;
 using FertilityCare.Domain.Entities;
 using FertilityCare.Domain.Enums;
 using FertilityCare.Shared.Exceptions;
@@ -55,6 +57,12 @@ namespace FertilityCare.UseCase.Implements
 
             var appointments = await _appointmentRepository.FindAllByStepIdAsync(stepId);
             return appointments.Select(a => a.MapToAppointmentDTO()).ToList();
+        }
+
+        public async Task<IEnumerable<AppointmentDTO>> GetPagedAppointmentsAsync(AppointmentQueryDTO query, PaginationRequestDTO request)
+        {
+            var result = await _appointmentRepository.GetPageAsync(query, request.Page, request.PageSize);
+            return result.Select(x => x.MapToAppointmentDTO()).ToList();
         }
 
         public async Task<AppointmentDTO> MarkStatusAppointmentAsync(Guid appointmentId, string status)

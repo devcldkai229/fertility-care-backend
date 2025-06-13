@@ -1,4 +1,5 @@
-﻿using FertilityCare.Shared.Exceptions;
+﻿using Fertilitycare.Share.Comon;
+using FertilityCare.Shared.Exceptions;
 using FertilityCare.UseCase.DTOs.Appointments;
 using FertilityCare.UseCase.Interfaces.Repositories;
 using FertilityCare.UseCase.Interfaces.Services;
@@ -19,6 +20,44 @@ namespace FertilityCare.WebAPI.Controllers
             _appointmentService = appointmentService;
         }
 
+        [HttpGet]
+        public async Task<ActionResult<ApiResponse<IEnumerable<AppointmentDTO>>>> GetPagedAppointments(
+            [FromBody] AppointmentQueryDTO query, [FromQuery] PaginationRequestDTO request)
+        {
+
+            try
+            {
+                var result = await _appointmentService.GetPagedAppointmentsAsync(query, request);
+                return Ok(new ApiResponse<IEnumerable<AppointmentDTO>>
+                {
+                    StatusCode = 200,
+                    Message = "Appointments fetched successfully!",
+                    Data = result,
+                    ResponsedAt = DateTime.UtcNow
+                });
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(new ApiResponse<object>
+                {
+                    StatusCode = e.StatusCode,
+                    Message = e.Message,
+                    Data = null,
+                    ResponsedAt = DateTime.UtcNow
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponse<object>
+                {
+                    StatusCode = 400,
+                    Message = ex.Message,
+                    Data = null,
+                    ResponsedAt = DateTime.UtcNow
+                });
+            }
+        }
+
         [HttpPost]
         [Route("{stepId}")]
         public async Task<ActionResult<ApiResponse<AppointmentDTO>>> CreateAppointmentByStepId([FromRoute] string stepId, [FromBody] CreateAppointmentDailyRequestDTO request)
@@ -34,7 +73,7 @@ namespace FertilityCare.WebAPI.Controllers
                     ResponsedAt = DateTime.UtcNow
                 });
             }
-            catch(NotFoundException e)
+            catch (NotFoundException e)
             {
                 return NotFound(new ApiResponse<object>
                 {
@@ -44,7 +83,7 @@ namespace FertilityCare.WebAPI.Controllers
                     ResponsedAt = DateTime.UtcNow
                 });
             }
-            catch(AppointmentSlotLimitExceededException e)
+            catch (AppointmentSlotLimitExceededException e)
             {
                 return BadRequest(new ApiResponse<object>
                 {
@@ -54,7 +93,7 @@ namespace FertilityCare.WebAPI.Controllers
                     ResponsedAt = DateTime.UtcNow
                 });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(new ApiResponse<object>
                 {

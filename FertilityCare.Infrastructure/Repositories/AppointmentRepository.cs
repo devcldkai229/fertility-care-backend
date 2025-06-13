@@ -1,8 +1,11 @@
-﻿using FertilityCare.Domain.Entities;
+﻿using Fertilitycare.Share.Pagination;
+using FertilityCare.Domain.Entities;
 using FertilityCare.Domain.Enums;
 using FertilityCare.Infrastructure.Identity;
 using FertilityCare.Shared.Exceptions;
+using FertilityCare.UseCase.DTOs.Appointments;
 using FertilityCare.UseCase.Interfaces.Repositories;
+using FertilityCare.UseCase.Mappers;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -45,6 +48,21 @@ namespace FertilityCare.Infrastructure.Repositories
         public async Task<IEnumerable<Appointment>> FindAllByStepIdAsync(long stepId)
         {
             return await _context.Appointments.Where(x => x.OrderStepId == stepId).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Appointment>> GetPageAsync(AppointmentQueryDTO query, int page, int pageSize)
+        {
+            var baseQuery = _context.Appointments.AsQueryable();
+            if(!string.IsNullOrWhiteSpace(query.AppointmentDate))
+            {
+                baseQuery = baseQuery
+                    .Where(x => x.AppointmentDate == DateOnly.Parse(query.AppointmentDate));
+            }
+            var item = await baseQuery
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize) 
+                .ToListAsync();
+            return item;
         }
 
         public async Task<Appointment> FindByIdAsync(Guid id)
