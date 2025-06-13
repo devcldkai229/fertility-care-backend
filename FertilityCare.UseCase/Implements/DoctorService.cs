@@ -1,4 +1,6 @@
-﻿using FertilityCare.Domain.Entities;
+﻿using Fertilitycare.Share.Comon;
+using Fertilitycare.Share.Pagination;
+using FertilityCare.Domain.Entities;
 using FertilityCare.UseCase.DTOs.Doctors;
 using FertilityCare.UseCase.Interfaces.Repositories;
 using FertilityCare.UseCase.Interfaces.Services;
@@ -8,6 +10,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
+
 
 namespace FertilityCare.UseCase.Implements
 {
@@ -29,10 +33,23 @@ namespace FertilityCare.UseCase.Implements
         public async Task<DoctorDTO?> GetDoctorByIdAsync(string id)
         {
             if (!Guid.TryParse(id, out Guid doctorId))
-            return null;
+                return null;
 
             var result = await _doctorRepository.FindByIdAsync(doctorId);
             return result?.MapToDoctorDTO();
+        }
+
+        public async Task<PagedResult<DoctorDTO>> GetDoctorsPagedAsync(PaginationRequestDTO request)
+        {
+            var result = await _doctorRepository.GetPagedAsync(request.PageNumber, request.PageSize);
+
+            return new PagedResult<DoctorDTO>
+            {
+                Items = result.Items.Select(x => x.MapToDoctorDTO()).ToList(),
+                TotalItems = result.TotalItems,
+                PageNumber = result.PageNumber,
+                PageSize = result.PageSize
+            };
         }
     }
 }

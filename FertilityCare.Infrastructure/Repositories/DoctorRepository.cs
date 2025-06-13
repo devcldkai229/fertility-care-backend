@@ -1,4 +1,5 @@
-﻿using FertilityCare.Domain.Entities;
+﻿using Fertilitycare.Share.Pagination;
+using FertilityCare.Domain.Entities;
 using FertilityCare.Infrastructure.Identity;
 using FertilityCare.Shared.Exceptions;
 using FertilityCare.UseCase.Interfaces.Repositories;
@@ -73,6 +74,31 @@ namespace FertilityCare.Infrastructure.Repositories
             }
 
             return true;
+        }
+
+        public async Task<IQueryable<Doctor>> GetQueryableAsync()
+        {
+            await Task.CompletedTask;
+            return _context.Doctors.Include(d => d.UserProfile).AsQueryable();
+        }
+
+        public async Task<PagedResult<Doctor>> GetPagedAsync(int pageNumber, int pageSize)
+        {
+            var query = _context.Doctors.AsQueryable();
+
+            var totalItems = await query.CountAsync();
+            var items = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return new PagedResult<Doctor>
+            {
+                Items = items,
+                TotalItems = totalItems,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
         }
 
     }

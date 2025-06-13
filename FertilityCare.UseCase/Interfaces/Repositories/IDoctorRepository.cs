@@ -1,4 +1,5 @@
-﻿using FertilityCare.Domain.Entities;
+﻿using Fertilitycare.Share.Pagination;
+using FertilityCare.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,10 @@ namespace FertilityCare.UseCase.Interfaces.Repositories
 {
     public interface IDoctorRepository : IBaseRepository<Doctor, Guid>
     {
-      
+        Task<IQueryable<Doctor>> GetQueryableAsync();
+
+        Task<PagedResult<Doctor>> GetPagedAsync(int pageNumber, int pageSize);
+
+
     }
 }

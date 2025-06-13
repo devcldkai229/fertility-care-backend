@@ -1,4 +1,6 @@
-﻿using FertilityCare.Shared.Exceptions;
+﻿using Fertilitycare.Share.Comon;
+using Fertilitycare.Share.Pagination;
+using FertilityCare.Shared.Exceptions;
 using FertilityCare.UseCase.DTOs.Doctors;
 using FertilityCare.UseCase.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -91,6 +93,34 @@ namespace FertilityCare.WebAPI.Controllers
                     });
                 }
             }
-        
+        [HttpGet("paged")]
+        public async Task<ActionResult<ApiResponse<PagedResult<DoctorDTO>>>> GetDoctorsPaged(
+        [FromQuery] PaginationRequestDTO request)
+        {
+            try
+            {
+                var result = await _doctorService.GetDoctorsPagedAsync(request);
+
+                return Ok(new ApiResponse<PagedResult<DoctorDTO>>
+                {
+                    StatusCode = 200,
+                    Message = "Fetched paged result successfully.",
+                    Data = result,
+                    ResponsedAt = DateTime.Now
+                });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ApiResponse<object>
+                {
+                    StatusCode = 500,
+                    Message = e.Message,
+                    Data = null,
+                    ResponsedAt = DateTime.Now
+                });
+            }
         }
+
+
     }
+}

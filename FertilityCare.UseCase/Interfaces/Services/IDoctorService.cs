@@ -1,4 +1,6 @@
-﻿using FertilityCare.Domain.Entities;
+﻿using Fertilitycare.Share.Comon;
+using Fertilitycare.Share.Pagination;
+using FertilityCare.Domain.Entities;
 using FertilityCare.UseCase.DTOs.Doctors;
 using System;
 using System.Collections.Generic;
@@ -12,6 +14,7 @@ namespace FertilityCare.UseCase.Interfaces.Services
     {
         Task<IEnumerable<DoctorDTO>> GetAllDoctorsAsync();
         Task<DoctorDTO?> GetDoctorByIdAsync(string id);
+        Task<PagedResult<DoctorDTO>> GetDoctorsPagedAsync(PaginationRequestDTO request);
 
     }
 }
