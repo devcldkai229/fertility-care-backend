@@ -111,8 +111,10 @@ namespace FertilityCare.WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ApiResponse<IEnumerable<OrderDTO>>>> GetOrderByDoctorId([FromQuery] string doctorId)
+        [Route("doctors/{doctorId}")]
+        public async Task<ActionResult<ApiResponse<IEnumerable<OrderDTO>>>> GetOrderByDoctorId([FromRoute] string doctorId)
         {
+            Console.WriteLine("Doctor " + doctorId);
             try
             {
                 var result = await _orderService.GetOrderByDoctorIdAsync(Guid.Parse(doctorId));
@@ -126,7 +128,7 @@ namespace FertilityCare.WebAPI.Controllers
             }
             catch (NotFoundException e)
             {
-                return NotFound(new ApiResponse<object>
+                return BadRequest(new ApiResponse<object>
                 {
                     StatusCode = 404,
                     Message = e.Message,
@@ -147,7 +149,8 @@ namespace FertilityCare.WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ApiResponse<IEnumerable<OrderDTO>>>> GetOrderByPatientId([FromQuery] string patientId)
+        [Route("patients/{patientId}")]
+        public async Task<ActionResult<ApiResponse<IEnumerable<OrderDTO>>>> GetOrderByPatientId([FromRoute] string patientId)
         {
             try
             {

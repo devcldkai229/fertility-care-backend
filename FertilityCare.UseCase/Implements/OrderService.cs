@@ -113,6 +113,7 @@ namespace FertilityCare.UseCase.Implements
             {
                 PatientId = savePatient.Id,
                 DoctorId = doctor.Id,
+                TreatmentServiceId = treatmentService.Id,
                 Status = OrderStatus.InProgress,
                 Note = "",
                 TotalEgg = 0,
@@ -166,8 +167,9 @@ namespace FertilityCare.UseCase.Implements
 
         public async Task<IEnumerable<OrderDTO>> GetOrderByDoctorIdAsync(Guid doctorId)
         {
-            var doctor = await _doctorRepository.FindByIdAsync(doctorId)
-                          ?? throw new NotFoundException("Doctor not found!");
+            var doctor = await _doctorRepository.FindByIdAsync(doctorId);
+                         
+            Console.WriteLine(doctorId.ToString());
 
             var orders = await _orderRepository.FindAllByDoctorIdAsync(doctorId);
             return orders.Select(x => x.MapToOderDTO());

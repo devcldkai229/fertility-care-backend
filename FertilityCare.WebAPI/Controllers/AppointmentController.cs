@@ -21,7 +21,7 @@ namespace FertilityCare.WebAPI.Controllers
 
         [HttpPost]
         [Route("{stepId}")]
-        public async Task<ActionResult<ApiResponse<AppointmentDTO>>> CreateAppointmentByStepId([FromRoute] string stepId, [FromBody] CreateAppointmentRequestDTO request)
+        public async Task<ActionResult<ApiResponse<AppointmentDTO>>> CreateAppointmentByStepId([FromRoute] string stepId, [FromBody] CreateAppointmentDailyRequestDTO request)
         {
             try
             {
@@ -68,7 +68,7 @@ namespace FertilityCare.WebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("/{orderId}/{stepId}")]
+        [Route("{orderId}/{stepId}")]
         public async Task<ActionResult<ApiResponse<IEnumerable<AppointmentDTO>>>> GetAppointmentsByOrderIdAndStepId([FromRoute] string orderId, [FromRoute] long stepId)
         {
             try
@@ -105,8 +105,8 @@ namespace FertilityCare.WebAPI.Controllers
         }
 
         [HttpPatch]
-        [Route("/mark-status/{appointmentId}")]
-        public async Task<ActionResult<AppointmentDTO>> MarkStatusAppointmentById([FromRoute] string appointmentId, string status)
+        [Route("mark-status/{appointmentId}")]
+        public async Task<ActionResult<AppointmentDTO>> MarkStatusAppointmentById([FromRoute] string appointmentId, [FromQuery] string status)
         {
             try
             {

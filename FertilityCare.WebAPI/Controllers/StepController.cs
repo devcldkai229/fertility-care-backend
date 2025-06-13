@@ -18,7 +18,7 @@ namespace FertilityCare.WebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("/{orderId}")]
+        [Route("{orderId}")]
         public async Task<ActionResult<IEnumerable<OrderStepDTO>>> GetStepsByOrderId([FromRoute] string orderId)
         {
             try
@@ -55,7 +55,7 @@ namespace FertilityCare.WebAPI.Controllers
 
         [HttpPut]
         [Route("{stepId}")]
-        public async Task<ActionResult<ApiResponse<(OrderStepDTO, string)>>> MarkStatusByStepId([FromRoute] long stepId, string status)
+        public async Task<ActionResult<ApiResponse<(OrderStepDTO, string)>>> MarkStatusByStepId([FromRoute] long stepId, [FromQuery]string status)
         {
             try
             {

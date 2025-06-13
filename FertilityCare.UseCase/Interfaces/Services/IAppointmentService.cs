@@ -16,7 +16,7 @@ namespace FertilityCare.UseCase.Interfaces.Services
 
         Task<IEnumerable<AppointmentDTO>> GetAppointmentsByStepIdAsync(Guid orderId, long stepId);
 
-        Task<AppointmentDTO> PlaceAppointmentByStepIdAsync(Guid stepId, CreateAppointmentRequestDTO request);
+        Task<AppointmentDTO> PlaceAppointmentByStepIdAsync(Guid stepId, CreateAppointmentDailyRequestDTO request);
 
         Task<AppointmentDTO> UpdateInfoAppointmentByAppointmentIdAsync(
             Guid appointmentId, UpdateInfoAppointmentRequestDTO request);

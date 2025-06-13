@@ -1,5 +1,7 @@
-﻿using FertilityCare.Infrastructure.Identity;
+﻿using Fertilitycare.Share.Models;
+using FertilityCare.Infrastructure.Identity;
 using FertilityCare.Infrastructure.Repositories;
+using FertilityCare.Infrastructure.Services;
 using FertilityCare.UseCase.Implements;
 using FertilityCare.UseCase.Interfaces.Repositories;
 using FertilityCare.UseCase.Interfaces.Services;
@@ -20,6 +22,8 @@ namespace FertilityCare.WebAPI
             builder.Services.AddDbContext<FertilityCareDBContext>(options =>
                     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
                            .UseLazyLoadingProxies());
+
+            builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 
             builder.Services.AddScoped<IDoctorService, DoctorService>();
 
@@ -46,6 +50,23 @@ namespace FertilityCare.WebAPI
             builder.Services.AddScoped<IPatientService, PatientService>();
 
             builder.Services.AddScoped<IPatientRepository, PatientRepository>();
+
+            builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+
+            builder.Services.AddScoped<IAppointmentReminderRepository, AppointmentReminderRepository>();
+
+            builder.Services.AddScoped<IOrderStepRepository, OrderStepRepository>();
+
+            builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
+
+            builder.Services.AddScoped<IAppointmentService, AppointmentService>();
+
+            builder.Services.AddScoped<IOrderService, OrderService>();
+
+            builder.Services.AddScoped<IOrderStepService, OrderStepService>();
+
+            builder.Services.AddScoped<IEmailService, EmailService>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
