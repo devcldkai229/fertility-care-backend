@@ -104,7 +104,7 @@ namespace FertilityCare.WebAPI.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPatch]
         [Route("/mark-status/{appointmentId}")]
         public async Task<ActionResult<AppointmentDTO>> MarkStatusAppointmentById([FromRoute] string appointmentId, string status)
         {
