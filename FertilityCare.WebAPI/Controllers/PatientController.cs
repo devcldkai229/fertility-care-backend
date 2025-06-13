@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FertilityCare.WebAPI.Controllers
 {
-    [Route("api/patient-services")]
+    [Route("api/v1/patients")]
     [ApiController]
     public class PatientController : ControllerBase
     {

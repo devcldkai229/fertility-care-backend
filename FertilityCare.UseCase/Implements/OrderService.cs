@@ -167,7 +167,7 @@ namespace FertilityCare.UseCase.Implements
         public async Task<IEnumerable<OrderDTO>> GetOrderByDoctorIdAsync(Guid doctorId)
         {
             var doctor = await _doctorRepository.FindByIdAsync(doctorId)
-                          ?? throw new ArgumentException("Doctor not found!");
+                          ?? throw new NotFoundException("Doctor not found!");
 
             var orders = await _orderRepository.FindAllByDoctorIdAsync(doctorId);
             return orders.Select(x => x.MapToOderDTO());
