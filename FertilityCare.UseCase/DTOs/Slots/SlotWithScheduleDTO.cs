@@ -10,11 +10,12 @@ namespace FertilityCare.UseCase.DTOs.Slots
     public class SlotWithScheduleDTO
     {
         public long SlotId { get; set; }
+
         public string StartTime { get; set; }
+
         public string EndTime { get; set; }
 
-        // Đây là danh sách ID của các DoctorSchedule trong Slot
-        public List<long> DoctorScheduleIds { get; set; } = new();
+        public long ScheduleId { get; set; }
     }
 }
 

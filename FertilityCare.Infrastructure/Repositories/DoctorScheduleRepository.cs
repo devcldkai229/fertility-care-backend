@@ -87,17 +87,10 @@ namespace FertilityCare.Infrastructure.Repositories
             );
         }
 
-        public async Task<IEnumerable<DoctorSchedule>> GetSchedulesByDateAndDoctorAsync(DateOnly workDate, Guid? doctorId = null)
+        public async Task<IEnumerable<DoctorSchedule>> GetSchedulesByDateAndDoctorAsync(DateOnly workDate, Guid doctorId)
         {
-            var query = _context.DoctorSchedules
-            .Include(ds => ds.Slot)
-            .Include(ds => ds.Doctor)
-            .Where(ds => ds.WorkDate == workDate);
-
-            if (doctorId.HasValue)
-                query = query.Where(ds => ds.DoctorId == doctorId.Value);
-
-            return await query.ToListAsync();
+            return await _context.DoctorSchedules
+            .Where(ds => ds.WorkDate == workDate && ds.DoctorId == doctorId).ToListAsync();
 
         }
     }

@@ -8,7 +8,7 @@ namespace Fertilitycare.Share.Comon
 {
     public class PaginationRequestDTO
     {
-        public int MaxPageSize { get; set; }
+        public int MaxPageSize { get; set; } = 10
 
         public int PageSize { get; set; } = 3;
 

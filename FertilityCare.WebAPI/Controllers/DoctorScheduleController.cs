@@ -230,10 +230,12 @@ namespace FertilityCare.WebAPI.Controllers
                 });
             }
         }
-        [HttpGet("slots-by-date-doctor")]
-        public async Task<IActionResult> GetSlotsWithSchedulesByDateAndDoctor(
-        [FromQuery] DateOnly date,
-        [FromQuery] Guid doctorId)
+
+        [HttpGet]
+        [Route("slots/{doctorId}")]
+        public async Task<ActionResult<ApiResponse<IEnumerable<SlotWithScheduleDTO>>>> GetSlotsWithSchedulesByDateAndDoctor(
+        [FromQuery] string date,
+        [FromRoute] string doctorId)
         {
             var result = await _doctorScheduleService.GetSlotWithDoctorsByDateAsync(date, doctorId);
 

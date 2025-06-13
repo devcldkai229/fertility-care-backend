@@ -19,6 +19,22 @@ namespace FertilityCare.WebAPI
 
             builder.Services.AddControllers();
 
+
+            builder.Services.AddCors(x =>
+            {
+                //x.AddDefaultPolicy(builder =>
+                //{
+                //    builder.AllowAnyMethod();
+                //    builder.AllowAnyOrigin("http://localhost:5143");
+                //}
+                //);
+
+                x.AddPolicy("External", y =>
+                {
+                    y.WithOrigins("http://localhost:5143");
+                });
+            });
+
             builder.Services.AddDbContext<FertilityCareDBContext>(options =>
                     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
                            .UseLazyLoadingProxies());
@@ -75,6 +91,7 @@ namespace FertilityCare.WebAPI
 
             app.UseAuthorization();
 
+            app.UseCors();
 
             app.MapControllers();
 

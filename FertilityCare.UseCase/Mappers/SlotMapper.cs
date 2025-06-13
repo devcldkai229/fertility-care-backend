@@ -5,6 +5,7 @@ using FertilityCare.UseCase.DTOs.UserProfiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,24 +28,18 @@ namespace FertilityCare.UseCase.Mappers
 
         public static IEnumerable<SlotWithScheduleDTO> MapToSlotWithScheduleIdsDTO(this IEnumerable<DoctorSchedule> schedules)
         {
-            return schedules
-                .GroupBy(ds => ds.SlotId)
-                .Select(group =>
-                {
-                    var firstSlot = group.First().Slot;
+            return schedules.Select(x => x.MapToSlotScheduleDTO()).ToList();
+        }
 
-                    return new SlotWithScheduleDTO
-                    {
-                        SlotId = firstSlot.Id,
-                        StartTime = firstSlot.StartTime.ToString("HH:mm"),
-                        EndTime = firstSlot.EndTime.ToString("HH:mm"),
-                        DoctorScheduleIds = group
-                            .Select(ds => ds.Id)
-                            .Distinct()
-                            .ToList()
-                    };
-                })
-                .ToList();
+        public static SlotWithScheduleDTO MapToSlotScheduleDTO(this DoctorSchedule schedule)
+        {
+            return new SlotWithScheduleDTO
+            {
+                SlotId = schedule.SlotId,
+                StartTime = schedule.Slot.StartTime.ToString("HH:mm"),
+                EndTime = schedule.Slot.EndTime.ToString("HH:mm"),
+                ScheduleId = schedule.Id,
+            };
         }
 
 
