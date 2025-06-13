@@ -43,7 +43,7 @@ namespace FertilityCare.WebAPI.Controllers
             }
             catch (NotFoundException ex)
             {
-                return BadRequest(new ApiResponse<object>
+                return NotFound(new ApiResponse<object>
                 {
                     StatusCode = 404,
                     Message = ex.Message,
@@ -182,7 +182,7 @@ namespace FertilityCare.WebAPI.Controllers
             }
         }
 
-
+  
 
     }
 }
