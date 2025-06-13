@@ -74,16 +74,13 @@ namespace FertilityCare.UseCase.Implements
             return appointment.MapToAppointmentDTO();
         }
 
-        public async Task<AppointmentDTO> PlaceAppointmentByStepIdAsync(Guid orderId, CreateAppointmentRequestDTO request)
+        public async Task<AppointmentDTO> PlaceAppointmentByStepIdAsync(Guid orderId, CreateAppointmentDailyRequestDTO request)
         {
-            var order = await _orderRepository.FindByIdAsync(orderId) 
-                ?? throw new NotFoundException("Order not found!");
+            var order = await _orderRepository.FindByIdAsync(orderId);
 
-            var step = await _stepRepository.FindByIdAsync(request.OrderStepId) 
-                ?? throw new NotFoundException("Order step not found!");
+            var step = await _stepRepository.FindByIdAsync(request.OrderStepId);
 
-            var schedule = await _scheduleRepository.FindByIdAsync(request.DoctorScheduleId) 
-                ?? throw new NotFoundException("Schedule not found!");
+            var schedule = await _scheduleRepository.FindByIdAsync(request.DoctorScheduleId);
 
             var appointmentCount = await _appointmentRepository.CountAppointmentByScheduleId(schedule.Id);
             if(appointmentCount > schedule.MaxAppointments)
@@ -96,10 +93,8 @@ namespace FertilityCare.UseCase.Implements
                 PatientId = Guid.Parse(request.PatientId),
                 DoctorId = Guid.Parse(request.DoctorId),
                 DoctorScheduleId = request.DoctorScheduleId,
-                TreatmentServiceId = Guid.Parse(request.TreatmentServiceId),
+                TreatmentServiceId = order.TreatmentServiceId,
                 OrderStepId = request.OrderStepId,
-                BookingEmail = request.BookingEmail,
-                BookingPhone = request.BookingPhone,
                 AppointmentDate = schedule.WorkDate,
                 StartTime = schedule.Slot.StartTime,
                 EndTime = schedule.Slot.EndTime,
@@ -117,7 +112,7 @@ namespace FertilityCare.UseCase.Implements
             return appointment.MapToAppointmentDTO();
         }
 
-        // none process the scenario of content email html css, 
+        // none process the scenario of content email html css
         public async Task<AppointmentDTO> PlaceAppointmentWithStartOrderAsync(CreateAppointmentRequestDTO request)
         {
             var step = await _stepRepository.FindByIdAsync(request.OrderStepId);

@@ -37,8 +37,7 @@ namespace FertilityCare.UseCase.Implements
 
         public async Task<(OrderStepDTO, string)> MarkStatusByStepIdAsync(long stepId, string status)
         {
-            var step = await _stepRepository.FindByIdAsync(stepId)
-                ?? throw new NotFoundException("Order step not found!");
+            var step = await _stepRepository.FindByIdAsync(stepId);
 
             if (!Enum.TryParse(status, true, out StepStatus stepStatus))
             {

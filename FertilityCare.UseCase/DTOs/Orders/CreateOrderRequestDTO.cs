@@ -34,7 +34,7 @@ namespace FertilityCare.UseCase.DTOs.Orders
 
         public long DoctorScheduleId { get; set; }
 
-        public string? TreatmentServiceId { get; set; }
+        public string TreatmentServiceId { get; set; }
 
         public string? Note { get; set; }
 

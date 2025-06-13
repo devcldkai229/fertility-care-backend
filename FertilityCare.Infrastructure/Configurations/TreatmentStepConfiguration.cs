@@ -38,8 +38,9 @@ public class TreatmentStepConfiguration : IEntityTypeConfiguration<TreatmentStep
             .HasDefaultValueSql("GETDATE()");
 
         builder.HasOne(ts => ts.TreatmentService)
-            .WithMany()
-            .HasForeignKey(ts => ts.TreatmentServiceId)
-            .OnDelete(DeleteBehavior.Cascade);
+               .WithMany(t => t.TreatmentSteps) 
+               .HasForeignKey(ts => ts.TreatmentServiceId)
+               .OnDelete(DeleteBehavior.Cascade);
+
     }
 }

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FertilityCare.WebAPI.Controllers
 {
-    [Route("api/treatment-services")]
+    [Route("api/v1/treatments")]
     [ApiController]
     public class TreatmentController : ControllerBase
     {
@@ -14,23 +14,25 @@ namespace FertilityCare.WebAPI.Controllers
         {
             _publicTreatmentService = publicTreatmentService;
         }
+
         [HttpGet]
         public async Task<ActionResult<ApiResponse<IEnumerable<TreatmentServiceDTO>>>> GetAll()
         {
             try
             {
                 var result = await _publicTreatmentService.GetAllAsync();
+              
                 return Ok(new ApiResponse<IEnumerable<TreatmentServiceDTO>>
                 {
                     StatusCode = 200,
-                    Message = "",
+                    Message = "hihiih",
                     Data = result,
                     ResponsedAt = DateTime.Now
                 });
             }
             catch (Exception ex)
             {
-                return NoContent();
+                return BadRequest();
             }
         }
 

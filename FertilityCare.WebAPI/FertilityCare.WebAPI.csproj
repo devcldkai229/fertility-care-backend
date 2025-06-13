@@ -13,4 +13,8 @@
     <ProjectReference Include="..\FertilityCare.UseCase\FertilityCare.UseCase.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="9.0.6" />
+  </ItemGroup>
+
 </Project>
