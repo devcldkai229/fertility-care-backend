@@ -1,4 +1,6 @@
-﻿using FertilityCare.UseCase.DTOs.Appointments;
+﻿using Fertilitycare.Share.Comon;
+using Fertilitycare.Share.Pagination;
+using FertilityCare.UseCase.DTOs.Appointments;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +22,7 @@ namespace FertilityCare.UseCase.Interfaces.Services
 
         Task<AppointmentDTO> UpdateInfoAppointmentByAppointmentIdAsync(
             Guid appointmentId, UpdateInfoAppointmentRequestDTO request);
+        Task<IEnumerable<AppointmentDTO>> GetPagedAppointmentsAsync(AppointmentQueryDTO query, PaginationRequestDTO request);
 
     }
 }

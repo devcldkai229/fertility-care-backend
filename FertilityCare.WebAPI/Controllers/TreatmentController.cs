@@ -32,7 +32,13 @@ namespace FertilityCare.WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest();
+                return BadRequest(new ApiResponse<IEnumerable<TreatmentServiceDTO>>
+                {
+                    StatusCode = 400,
+                    Message = ex.Message,
+                    Data = null,
+                    ResponsedAt = DateTime.Now
+                });
             }
         }
 

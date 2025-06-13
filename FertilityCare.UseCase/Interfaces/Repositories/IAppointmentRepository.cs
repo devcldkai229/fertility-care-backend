@@ -1,5 +1,7 @@
-﻿using FertilityCare.Domain.Entities;
+﻿using Fertilitycare.Share.Pagination;
+using FertilityCare.Domain.Entities;
 using FertilityCare.Domain.Enums;
+using FertilityCare.UseCase.DTOs.Appointments;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +17,6 @@ namespace FertilityCare.UseCase.Interfaces.Repositories
 
         Task<IEnumerable<Appointment>> FindAllByStepIdAsync(long stepId);
 
+        Task<IEnumerable<Appointment>> GetPageAsync(AppointmentQueryDTO query, int page, int pageSize);
     }
 }
