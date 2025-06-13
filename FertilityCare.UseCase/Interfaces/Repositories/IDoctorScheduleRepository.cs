@@ -9,5 +9,6 @@ namespace FertilityCare.UseCase.Interfaces.Repositories
 {
     public interface IDoctorScheduleRepository : IBaseRepository<DoctorSchedule, long>
     {
+        public Task<IQueryable<DoctorSchedule>> FindAllQueryableAsync();
     }
 }

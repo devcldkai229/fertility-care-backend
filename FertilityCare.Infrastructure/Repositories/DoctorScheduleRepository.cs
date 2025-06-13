@@ -76,5 +76,16 @@ namespace FertilityCare.Infrastructure.Repositories
 
             return true;
         }
+
+        public Task<IQueryable<DoctorSchedule>> FindAllQueryableAsync()
+        {
+            return Task.FromResult(
+                _context.DoctorSchedules
+                        .Include(ds => ds.Doctor)
+                        .Include(ds => ds.Slot)
+                        .AsQueryable()
+            );
+        }
+
     }
 }

@@ -1,4 +1,6 @@
-﻿using FertilityCare.Domain.Entities;
+﻿using Fertilitycare.Share.Comon;
+using Fertilitycare.Share.Pagination;
+using FertilityCare.Domain.Entities;
 using FertilityCare.Shared.Exceptions;
 using FertilityCare.UseCase.DTOs.DoctorSchedules;
 using FertilityCare.UseCase.Interfaces.Repositories;
@@ -84,6 +86,28 @@ namespace FertilityCare.UseCase.Implements
             var result = await _scheduleRepository.FindByIdAsync(scheduleId);
             return result?.MapToScheduleDTO();
         }
+
+        public async Task<PagedResult<DoctorScheduleDTO>> GetSchedulesPagedAsync(PaginationRequestDTO request)
+        {
+            var query = await _scheduleRepository.FindAllQueryableAsync();
+
+            var totalItems = query.Count();
+
+            var pagedItems = query
+                .Skip((request.PageNumber - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .Select(x => x.MapToScheduleDTO())
+                .ToList();
+
+            return new PagedResult<DoctorScheduleDTO>
+            {
+                Items = pagedItems,
+                PageNumber = request.PageNumber,
+                PageSize = request.PageSize,
+                TotalItems = totalItems
+            };
+        }
+
 
         public async Task<DoctorScheduleDTO> UpdateScheduleAsync(UpdateDoctorScheduleRequestDTO request)
         {

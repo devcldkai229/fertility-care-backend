@@ -1,4 +1,6 @@
-﻿using FertilityCare.Domain.Entities;
+﻿using Fertilitycare.Share.Comon;
+using Fertilitycare.Share.Pagination;
+using FertilityCare.Domain.Entities;
 using FertilityCare.UseCase.DTOs.DoctorSchedules;
 using System;
 using System.Collections.Generic;
@@ -23,5 +25,6 @@ namespace FertilityCare.UseCase.Interfaces.Services
 
         Task<DoctorScheduleDTO?> GetScheduleByIdAsync(long scheduleId);
 
+        Task<PagedResult<DoctorScheduleDTO>> GetSchedulesPagedAsync(PaginationRequestDTO request);
     }
 }
