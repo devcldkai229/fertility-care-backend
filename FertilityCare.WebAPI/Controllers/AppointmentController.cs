@@ -68,7 +68,7 @@ namespace FertilityCare.WebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("{orderId}/{stepId}")]
+        [Route("/{orderId}/{stepId}")]
         public async Task<ActionResult<ApiResponse<IEnumerable<AppointmentDTO>>>> GetAppointmentsByOrderIdAndStepId([FromRoute] string orderId, [FromRoute] long stepId)
         {
             try
