@@ -104,7 +104,7 @@ namespace FertilityCare.UseCase.Implements
            
         }
 
-        public async Task<IEnumerable<SlotWithScheduleDTO>> GetSlotWithDoctorsByDateAsync(DateOnly workDate, Guid? id)
+        public async Task<IEnumerable<SlotWithScheduleDTO>> GetSlotWithDoctorsByDateAsync(String workDate, string id)
         {
             var result = await _scheduleRepository.GetSchedulesByDateAndDoctorAsync(workDate, id);
             return result.MapToSlotWithScheduleIdsDTO();
