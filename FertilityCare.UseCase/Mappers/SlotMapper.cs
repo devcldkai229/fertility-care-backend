@@ -1,5 +1,7 @@
 ﻿using FertilityCare.Domain.Entities;
+using FertilityCare.UseCase.DTOs.Doctors;
 using FertilityCare.UseCase.DTOs.Slots;
+using FertilityCare.UseCase.DTOs.UserProfiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +24,30 @@ namespace FertilityCare.UseCase.Mappers
                 UpdatedAt = slot.UpdatedAt?.ToString("dd/MM/yyyy HH:mm:ss"),
             };
         }
+
+        public static IEnumerable<SlotWithScheduleDTO> MapToSlotWithScheduleIdsDTO(this IEnumerable<DoctorSchedule> schedules)
+        {
+            return schedules
+                .GroupBy(ds => ds.SlotId)
+                .Select(group =>
+                {
+                    var firstSlot = group.First().Slot;
+
+                    return new SlotWithScheduleDTO
+                    {
+                        SlotId = firstSlot.Id,
+                        StartTime = firstSlot.StartTime.ToString("HH:mm"),
+                        EndTime = firstSlot.EndTime.ToString("HH:mm"),
+                        DoctorScheduleIds = group
+                            .Select(ds => ds.Id)
+                            .Distinct()
+                            .ToList()
+                    };
+                })
+                .ToList();
+        }
+
+
 
     }
 }

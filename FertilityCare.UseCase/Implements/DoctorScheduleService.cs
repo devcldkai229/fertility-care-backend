@@ -2,7 +2,10 @@
 using Fertilitycare.Share.Pagination;
 using FertilityCare.Domain.Entities;
 using FertilityCare.Shared.Exceptions;
+using FertilityCare.UseCase.DTOs.Doctors;
 using FertilityCare.UseCase.DTOs.DoctorSchedules;
+using FertilityCare.UseCase.DTOs.Slots;
+using FertilityCare.UseCase.DTOs.UserProfiles;
 using FertilityCare.UseCase.Interfaces.Repositories;
 using FertilityCare.UseCase.Interfaces.Services;
 using FertilityCare.UseCase.Mappers;
@@ -87,6 +90,7 @@ namespace FertilityCare.UseCase.Implements
             return result?.MapToScheduleDTO();
         }
 
+
         public async Task<IEnumerable<DoctorScheduleDTO>> GetSchedulesPagedAsync(PaginationRequestDTO request)
         {
             var query = await _scheduleRepository.FindAllQueryableAsync();
@@ -100,6 +104,11 @@ namespace FertilityCare.UseCase.Implements
            
         }
 
+        public async Task<IEnumerable<SlotWithScheduleDTO>> GetSlotWithDoctorsByDateAsync(DateOnly workDate, Guid? id)
+        {
+            var result = await _scheduleRepository.GetSchedulesByDateAndDoctorAsync(workDate, id);
+            return result.MapToSlotWithScheduleIdsDTO();
+        }
 
         public async Task<DoctorScheduleDTO> UpdateScheduleAsync(UpdateDoctorScheduleRequestDTO request)
         {

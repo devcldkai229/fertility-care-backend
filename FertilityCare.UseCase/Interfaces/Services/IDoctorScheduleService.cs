@@ -2,6 +2,8 @@
 using Fertilitycare.Share.Pagination;
 using FertilityCare.Domain.Entities;
 using FertilityCare.UseCase.DTOs.DoctorSchedules;
+using FertilityCare.UseCase.DTOs.Slots;
+using FertilityCare.UseCase.DTOs.UserProfiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,5 +28,7 @@ namespace FertilityCare.UseCase.Interfaces.Services
         Task<DoctorScheduleDTO?> GetScheduleByIdAsync(long scheduleId);
 
         Task<IEnumerable<DoctorScheduleDTO>> GetSchedulesPagedAsync(PaginationRequestDTO request);
+
+        Task<IEnumerable<SlotWithScheduleDTO>> GetSlotWithDoctorsByDateAsync(DateOnly workDate, Guid? id);
     }
 }

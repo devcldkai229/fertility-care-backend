@@ -2,6 +2,8 @@
 using Fertilitycare.Share.Pagination;
 using FertilityCare.Shared.Exceptions;
 using FertilityCare.UseCase.DTOs.DoctorSchedules;
+using FertilityCare.UseCase.DTOs.Slots;
+using FertilityCare.UseCase.DTOs.UserProfiles;
 using FertilityCare.UseCase.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -228,6 +230,22 @@ namespace FertilityCare.WebAPI.Controllers
                 });
             }
         }
+        [HttpGet("slots-by-date-doctor")]
+        public async Task<IActionResult> GetSlotsWithSchedulesByDateAndDoctor(
+        [FromQuery] DateOnly date,
+        [FromQuery] Guid doctorId)
+        {
+            var result = await _doctorScheduleService.GetSlotWithDoctorsByDateAsync(date, doctorId);
+
+            return Ok(new ApiResponse<IEnumerable<SlotWithScheduleDTO>>
+            {
+                StatusCode = 200,
+                Message = "Slots with schedules fetched successfully.",
+                Data = result,
+                ResponsedAt = DateTime.Now
+            });
+        }
+
 
     }
 }
