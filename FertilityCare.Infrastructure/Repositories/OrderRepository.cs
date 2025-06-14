@@ -80,15 +80,5 @@ namespace FertilityCare.Infrastructure.Repositories
             return await _context.Orders.Where(x => x.PatientId == patientId).ToListAsync();
         }
 
-        public async Task<Order> FindOrderIdByPatientIdAsync(string patientId)
-        {
-            var result = await _context.Patients.FirstOrDefaultAsync(p => p.Id == Guid.Parse(patientId));
-            if(result == null)
-            {
-                throw new NotFoundException($"Patient with ID {patientId} not found.");
-            }
-            var order = _context.Orders.FirstOrDefault(p => p.PatientId.Equals(result.Id));
-            return order;
-        }
     }
 }

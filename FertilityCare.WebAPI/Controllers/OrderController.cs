@@ -17,41 +17,6 @@ namespace FertilityCare.WebAPI.Controllers
             _orderService = orderService;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<ApiResponse<string>>> GetOrderIdByPatientId([FromQuery] string patientId)
-        {
-            try
-            {
-                var result = await _orderService.GetOrderIdByPatientIdAsync(patientId);
-                return Ok(new ApiResponse<string>
-                {
-                    StatusCode = 200,
-                    Message = "Order ID fetched successfully",
-                    Data = result,
-                    ResponsedAt = DateTime.Now
-                });
-            }
-            catch (NotFoundException e)
-            {
-                return NotFound(new ApiResponse<object>
-                {
-                    StatusCode = 404,
-                    Message = e.Message,
-                    Data = null,
-                    ResponsedAt = DateTime.Now
-                });
-            }
-            catch (Exception e)
-            {
-                return BadRequest(new ApiResponse<object>
-                {
-                    StatusCode = 500,
-                    Message = e.Message,
-                    Data = null,
-                    ResponsedAt = DateTime.Now
-                });
-            }
-        }
 
         [HttpPost]
         public async Task<ActionResult<ApiResponse<OrderDTO>>> CreateOrder([FromBody] CreateOrderRequestDTO request)
