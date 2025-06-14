@@ -191,5 +191,15 @@ namespace FertilityCare.UseCase.Implements
             return order.Select(x => x.MapToOderDTO());
         }
 
+        public async Task<string> GetOrderIdByPatientIdAsync(string patientId)
+        {
+            var result = await _orderRepository.FindOrderIdByPatientIdAsync(patientId);
+            if(result == null)
+            {
+                throw new NotFoundException("order is not exist!");
+            }
+            return result.Id.ToString();
+
+        }
     }
 }

@@ -14,5 +14,7 @@ namespace FertilityCare.UseCase.Interfaces.Repositories
         Task<IEnumerable<Order>> FindAllByPatientIdAsync(Guid patientId);
 
         Task SaveChangeAsync();
+
+        Task<Order> FindOrderIdByPatientIdAsync(string patientId);
     }
 }

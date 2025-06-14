@@ -18,6 +18,8 @@ namespace FertilityCare.UseCase.Interfaces.Services
 
         Task<IEnumerable<OrderDTO>> GetOrderByPatientIdAsync(Guid patientId);
 
+        Task<string> GetOrderIdByPatientIdAsync(string patientId);
 
+        
     }
 }
