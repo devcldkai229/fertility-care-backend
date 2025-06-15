@@ -76,13 +76,16 @@ namespace FertilityCare.WebAPI.Controllers
             return Ok(result.Data);
         }
 
+        [Authorize]
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
             var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
             if (string.IsNullOrEmpty(userId))
+            {
                 return BadRequest("Invalid user");
+            }
 
             var success = await _authService.LogoutAsync(userId);
 
@@ -92,6 +95,16 @@ namespace FertilityCare.WebAPI.Controllers
             }
 
             return Ok(new { message = "Logged out successfully" });
+        }
+
+        [Authorize]
+        [HttpPost("me")]
+        public IActionResult GetCurrentUser()
+        {
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var email = User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value;
+
+            return Ok(new { userId, email });
         }
     }
 }
