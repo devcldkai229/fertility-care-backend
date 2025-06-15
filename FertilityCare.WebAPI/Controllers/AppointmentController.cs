@@ -59,12 +59,12 @@ namespace FertilityCare.WebAPI.Controllers
         }
 
         [HttpPost]
-        [Route("{stepId}")]
-        public async Task<ActionResult<ApiResponse<AppointmentDTO>>> CreateAppointmentByStepId([FromRoute] string stepId, [FromBody] CreateAppointmentDailyRequestDTO request)
+        [Route("{orderId}")]
+        public async Task<ActionResult<ApiResponse<AppointmentDTO>>> CreateAppointmentByStepId([FromRoute] string orderId, [FromBody] CreateAppointmentDailyRequestDTO request)
         {
             try
             {
-                var result = await _appointmentService.PlaceAppointmentByStepIdAsync(Guid.Parse(stepId), request);
+                var result = await _appointmentService.PlaceAppointmentByStepIdAsync(Guid.Parse(orderId), request);
                 return Ok(new ApiResponse<AppointmentDTO>
                 {
                     StatusCode = 200,

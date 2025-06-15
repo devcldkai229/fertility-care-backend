@@ -29,6 +29,8 @@ public class Appointment
 
     public virtual TreatmentService TreatmentService { get; set; }
 
+    public string Type { get; set; }
+
     public long? OrderStepId { get; set; }
 
     public virtual OrderStep? OrderStep { get; set; }

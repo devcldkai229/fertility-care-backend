@@ -4,6 +4,7 @@ using FertilityCare.Infrastructure.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FertilityCare.Infrastructure.Migrations
 {
     [DbContext(typeof(FertilityCareDBContext))]
-    partial class FertilityCareDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250615044014_AddingTypeAttributeAppointment")]
+    partial class AddingTypeAttributeAppointment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
