@@ -18,7 +18,7 @@ namespace FertilityCare.Infrastructure.Services
     {
         string GenerateAccessToken(IEnumerable<Claim> claims);
 
-        Task<string> GenerateRefreshToken(IEnumerable<Claim> claims);
+        string GenerateRefreshToken();
 
         ClaimsPrincipal? GetPrincipalFromExpiredToken(string token);
 
@@ -30,12 +30,9 @@ namespace FertilityCare.Infrastructure.Services
     {
         private readonly JwtConfiguration _jwtConfig;
 
-        private readonly FertilityCareDBContext _context;
-
-        public JwtService(IOptions<JwtConfiguration> jwtConfiguration, FertilityCareDBContext context)
+        public JwtService(IOptions<JwtConfiguration> jwtConfiguration)
         {
             _jwtConfig = jwtConfiguration.Value;
-            _context = context;
         }
 
 
@@ -55,36 +52,12 @@ namespace FertilityCare.Infrastructure.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public async Task<string> GenerateRefreshToken(IEnumerable<Claim> claims)
-        {
-            var principal = claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
-            if (principal is null)
-            {
-                throw new UnauthorizedAccessException("Invalid user claim!");
-            }
-
-            if(!Guid.TryParse(principal.Value, out var result))
-            {
-                throw new UnauthorizedAccessException("Invalid user!");
-            }
-
+        public string GenerateRefreshToken()
+        { 
             var randomNumber = new byte[64];
             using var r = RandomNumberGenerator.Create();
             r.GetBytes(randomNumber);
-            var token = Convert.ToBase64String(randomNumber);
-
-            var refreshToken = new RefreshToken
-            {
-                Token = token,
-                UserId = result,
-                ExpiredAt = DateTime.UtcNow.AddDays(_jwtConfig.RefreshTokenExpirationInDays),
-                CreatedAt = DateTime.UtcNow
-            };
-
-            await _context.RefreshTokens.AddAsync(refreshToken);
-            await _context.SaveChangesAsync();
-
-            return token;
+            return Convert.ToBase64String(randomNumber);
         }
 
         public ClaimsPrincipal? GetPrincipalFromExpiredToken(string token)

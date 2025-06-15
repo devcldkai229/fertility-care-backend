@@ -1,11 +1,13 @@
 ﻿using FertilityCare.Infrastructure.Configurations;
 using FertilityCare.Infrastructure.Identity;
 using FertilityCare.UseCase.DTOs.Auths;
+using FertilityCare.UseCase.DTOs.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -49,14 +51,47 @@ namespace FertilityCare.Infrastructure.Services
             _googleConfig = googleConfig.Value;
         }
 
-        public Task<AuthResult> GoogleLoginAsync(GoogleLoginRequest request)
+        public async Task<AuthResult> GoogleLoginAsync(GoogleLoginRequest request)
         {
             throw new NotImplementedException();
         }
 
-        public Task<AuthResult> LoginAsync(LoginRequest request)
+        public async Task<AuthResult> LoginAsync(LoginRequest request)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var loadedUser = await _userManager.FindByEmailAsync(request.Email);
+                if (loadedUser is null)
+                {
+                    return AuthResult.Failed("Invalid credentials!");
+                }
+
+                if(await _userManager.IsLockedOutAsync(loadedUser))
+                {
+                    return AuthResult.Failed("Account is locked on!");
+                }
+
+                var result = await _signInManager.CheckPasswordSignInAsync(loadedUser, request.Password, true);
+                if (!result.Succeeded)
+                {
+                    if (result.IsLockedOut)
+                    {
+                        return AuthResult.Failed("Account locked due to multiple failed attempts");
+                    }
+
+                    return AuthResult.Failed("Invalid credentials");
+                }
+
+                loadedUser.LastLogin = DateTime.UtcNow;
+                loadedUser.FailedLoginAttempts = 0;
+                await _userManager.UpdateAsync(loadedUser);
+
+                return GenerateTokenAsync();
+            }
+            catch (Exception ex) 
+            {
+                return AuthResult.Failed("Login failed");
+            }
         }
 
         public Task<bool> LogoutAsync(string userId)
@@ -72,6 +107,43 @@ namespace FertilityCare.Infrastructure.Services
         public Task<AuthResult> RegisterAsync(RegisterRequest request)
         {
             throw new NotImplementedException();
+        }
+
+        private async Task<AuthResult> GenerateTokenAsync(ApplicationUser user)
+        {
+            var roles = await _userManager.GetRolesAsync(user);
+            var claims = new List<Claim>
+            {
+                new (ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new (ClaimTypes.Email, user.Email ?? ""),
+                new ("userProfileId", user.UserProfileId.ToString())
+            };
+
+            claims.AddRange(roles.Select(x => new Claim(ClaimTypes.Role, x)));
+
+            var accessToken = _jwtService.GenerateAccessToken(claims);
+            var refreshToken = _jwtService.GenerateRefreshToken();
+
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(_jwtConfig.RefreshTokenExpirationInDays);
+
+            await _userManager.UpdateAsync(user);
+
+            return AuthResult.Success(new AuthResponse
+            {
+                AccessToken = accessToken,
+                RefreshToken = refreshToken,
+                ExpiresAt = DateTime.UtcNow.AddMinutes(_jwtConfig.ExpirationInMinutes),
+                User = new UserDto
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    FirstName = user.UserProfile.FirstName,
+                    MiddleName = user.UserProfile.MiddleName,
+                    LastName = user.UserProfile.LastName,
+                    AvatarUrl = user.UserProfile.AvatarUrl,
+                }
+            });
         }
     }
 }
