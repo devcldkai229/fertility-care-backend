@@ -52,6 +52,8 @@ namespace FertilityCare.Infrastructure.Identity
 
         public DbSet<MedicalExamination> MedicalExaminations { get; set; }
 
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
+
         public DbSet<Order> Orders { get; set; }
 
         public DbSet<OrderStep> OrderSteps { get; set; }

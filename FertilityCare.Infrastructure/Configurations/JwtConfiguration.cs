@@ -22,7 +22,7 @@ namespace FertilityCare.Infrastructure.Configurations
 
         public int ExpirationInMinutes { get; set; } = 60;
 
-        public int RefreshTokenExpirationInDays { get; set } = 7;
+        public int RefreshTokenExpirationInDays { get; set; } = 7;
 
 
 
