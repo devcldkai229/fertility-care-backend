@@ -1,7 +1,10 @@
-﻿using FertilityCare.Infrastructure.Configurations;
+﻿using FertilityCare.Domain.Entities;
+using FertilityCare.Domain.Enums;
+using FertilityCare.Infrastructure.Configurations;
 using FertilityCare.Infrastructure.Identity;
 using FertilityCare.UseCase.DTOs.Auths;
 using FertilityCare.UseCase.DTOs.Users;
+using Google.Apis.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using System;
@@ -53,7 +56,63 @@ namespace FertilityCare.Infrastructure.Services
 
         public async Task<AuthResult> GoogleLoginAsync(GoogleLoginRequest request)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var payload = await GoogleJsonWebSignature.ValidateAsync(request.IdToken, new GoogleJsonWebSignature.ValidationSettings
+                {
+                    Audience = new[] { _googleConfig.ClientId }
+                });
+
+                var user = await _userManager.FindByEmailAsync(payload.Email);
+
+                if (user is null)
+                {
+                    if (payload.EmailVerified)
+                    {
+                        var profileId = Guid.NewGuid();
+
+                        ApplicationUser newUser = new ApplicationUser
+                        {
+                            Id = Guid.NewGuid(),
+                            UserName = payload.Email,
+                            Email = payload.Email,
+                            EmailConfirmed = payload.EmailVerified,
+                            GoogleId = payload.Subject,
+                            IsGoogleAccount = true,
+                            UserProfileId = profileId,
+                            UserProfile = new UserProfile
+                            {
+                                Id = profileId,
+                                FirstName = payload.GivenName,
+                                MiddleName = "",
+                                LastName = payload.FamilyName,
+                                AvatarUrl = payload.Picture
+                            }
+                        };
+
+                        var createResult = await _userManager.CreateAsync(newUser);
+                        if (!createResult.Succeeded)
+                        {
+                            return AuthResult.Failed("Failed to create user account");
+                        }
+                    }
+                }
+                else if (!user.IsGoogleAccount)
+                {
+                    user.GoogleId = payload.Subject;
+                    user.IsGoogleAccount = true;
+                    await _userManager.UpdateAsync(user);
+
+                }
+
+                user.LastLogin = DateTime.Now;
+                await _userManager.UpdateAsync(user);
+                return await GenerateTokenAsync(user);
+            }
+            catch(Exception ex)
+            {
+                return AuthResult.Failed("Google login failed");
+            }
         }
 
         public async Task<AuthResult> LoginAsync(LoginRequest request)
@@ -86,7 +145,7 @@ namespace FertilityCare.Infrastructure.Services
                 loadedUser.FailedLoginAttempts = 0;
                 await _userManager.UpdateAsync(loadedUser);
 
-                return GenerateTokenAsync();
+                return await GenerateTokenAsync(loadedUser);
             }
             catch (Exception ex) 
             {
