@@ -1,11 +1,16 @@
 ﻿using Fertilitycare.Share.Models;
+using FertilityCare.Infrastructure.Configurations;
 using FertilityCare.Infrastructure.Identity;
 using FertilityCare.Infrastructure.Repositories;
 using FertilityCare.Infrastructure.Services;
 using FertilityCare.UseCase.Implements;
 using FertilityCare.UseCase.Interfaces.Repositories;
 using FertilityCare.UseCase.Interfaces.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace FertilityCare.WebAPI
 {
@@ -19,6 +24,11 @@ namespace FertilityCare.WebAPI
 
             builder.Services.AddControllers();
 
+            builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
+
+            builder.Services.Configure<JwtConfiguration>(builder.Configuration.GetSection("JwtSettings"));
+
+            builder.Services.Configure<GoogleAuthConfiguration>(builder.Configuration.GetSection("GoogleAuth"));
 
             builder.Services.AddCors(options =>
             {
@@ -34,8 +44,54 @@ namespace FertilityCare.WebAPI
             builder.Services.AddDbContext<FertilityCareDBContext>(options =>
                     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
                            .UseLazyLoadingProxies());
+            
+            var jwtConfig = builder.Configuration.GetSection(JwtConfiguration.SectionName).Get<JwtConfiguration>();
 
-            builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
+            {
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.AllowedForNewUsers = true;
+                options.User.RequireUniqueEmail = true;
+            }).AddEntityFrameworkStores<FertilityCareDBContext>()
+            .AddDefaultTokenProviders();
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    ValidateAudience = true,
+                    ValidateIssuer = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.SecretKey)),
+                    ValidAudience = jwtConfig.Audience,
+                    ValidIssuer = jwtConfig.Issuer,
+                    ClockSkew = TimeSpan.Zero,
+                };
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = context =>
+                    {
+                        if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                        {
+                            context.Response.Headers.Add("Token-Expired", "true");
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
+            });
 
             builder.Services.AddScoped<IDoctorService, DoctorService>();
 
@@ -79,6 +135,11 @@ namespace FertilityCare.WebAPI
 
             builder.Services.AddScoped<IEmailService, EmailService>();
 
+            builder.Services.AddScoped<IJwtService, JwtService>();
+
+            builder.Services.AddScoped<IAuthService, AuthService>();
+
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -86,6 +147,8 @@ namespace FertilityCare.WebAPI
             app.UseHttpsRedirection();
 
             app.UseCors("AllowClient");
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
