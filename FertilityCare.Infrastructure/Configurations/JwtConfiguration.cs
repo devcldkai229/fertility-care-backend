@@ -24,7 +24,5 @@ namespace FertilityCare.Infrastructure.Configurations
 
         public int RefreshTokenExpirationInDays { get; set; } = 7;
 
-
-
     }
 }

@@ -1,4 +1,6 @@
-﻿using FertilityCare.Infrastructure.Configurations;
+﻿using FertilityCare.Domain.Entities;
+using FertilityCare.Infrastructure.Configurations;
+using FertilityCare.Infrastructure.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -16,7 +18,7 @@ namespace FertilityCare.Infrastructure.Services
     {
         string GenerateAccessToken(IEnumerable<Claim> claims);
 
-        string GenerateRefreshToken(IEnumerable<Claim> claims);
+        Task<string> GenerateRefreshToken(IEnumerable<Claim> claims);
 
         ClaimsPrincipal? GetPrincipalFromExpiredToken(string token);
 
@@ -28,9 +30,12 @@ namespace FertilityCare.Infrastructure.Services
     {
         private readonly JwtConfiguration _jwtConfig;
 
-        public JwtService(IOptions<JwtConfiguration> jwtConfiguration)
+        private readonly FertilityCareDBContext _context;
+
+        public JwtService(IOptions<JwtConfiguration> jwtConfiguration, FertilityCareDBContext context)
         {
             _jwtConfig = jwtConfiguration.Value;
+            _context = context;
         }
 
 
@@ -50,22 +55,92 @@ namespace FertilityCare.Infrastructure.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public string GenerateRefreshToken(IEnumerable<Claim> claims)
+        public async Task<string> GenerateRefreshToken(IEnumerable<Claim> claims)
         {
+            var principal = claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
+            if (principal is null)
+            {
+                throw new UnauthorizedAccessException("Invalid user claim!");
+            }
+
+            if(!Guid.TryParse(principal.Value, out var result))
+            {
+                throw new UnauthorizedAccessException("Invalid user!");
+            }
+
             var randomNumber = new byte[64];
             using var r = RandomNumberGenerator.Create();
             r.GetBytes(randomNumber);
-            return Convert.ToBase64String(randomNumber);
+            var token = Convert.ToBase64String(randomNumber);
+
+            var refreshToken = new RefreshToken
+            {
+                Token = token,
+                UserId = result,
+                ExpiredAt = DateTime.UtcNow.AddDays(_jwtConfig.RefreshTokenExpirationInDays),
+                CreatedAt = DateTime.UtcNow
+            };
+
+            await _context.RefreshTokens.AddAsync(refreshToken);
+            await _context.SaveChangesAsync();
+
+            return token;
         }
 
         public ClaimsPrincipal? GetPrincipalFromExpiredToken(string token)
         {
-            throw new NotImplementedException();
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateAudience = false,
+                ValidateIssuer = false,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtConfig.SecretKey)),
+                ValidateLifetime = false
+            };
+
+            var handler = new JwtSecurityTokenHandler();
+
+            try
+            {
+                var principal = handler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
+                if (securityToken is not JwtSecurityToken jwtSecurityToken ||
+                    !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new SecurityTokenException("Invalid token");
+                }
+
+                return principal;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
         public bool ValidateToken(string token)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var hanlder = new JwtSecurityTokenHandler();
+
+                hanlder.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateAudience = true,
+                    ValidateIssuer = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtConfig.SecretKey)),
+                    ValidIssuer = _jwtConfig.Issuer,
+                    ValidAudience = _jwtConfig.Audience,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                }, out SecurityToken securityToken);
+
+                return true;
+            }
+            catch(Exception ex)
+            {
+                return false;
+            }
         }
     }
 }
