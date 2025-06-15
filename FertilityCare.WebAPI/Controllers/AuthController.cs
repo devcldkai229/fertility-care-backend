@@ -45,7 +45,21 @@ namespace FertilityCare.WebAPI.Controllers
                 return BadRequest(new { message = result.ErrorMessage });
 
             return Ok(result.Data);
-        } 
+        }
+
+        [HttpPost("register")]
+        public async Task<ActionResult<AuthResult>> Register([FromBody] RegisterRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _authService.RegisterAsync(request);
+
+            if (!result.IsSuccess)
+                return BadRequest(new { message = result.ErrorMessage });
+
+            return Ok(result.Data);
+        }
 
     }
 }
