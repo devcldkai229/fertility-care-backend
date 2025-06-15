@@ -207,7 +207,7 @@ namespace FertilityCare.Infrastructure.Services
             }
             catch (Exception ex)
             {
-                return AuthResult.Failed("Token refresh failed");
+                return AuthResult.Failed("Token refresh failed!");
             }
         }
 
