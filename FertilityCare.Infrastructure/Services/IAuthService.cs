@@ -1,4 +1,5 @@
-﻿using FertilityCare.Domain.Entities;
+﻿using FertilityCare.Domain.constants;
+using FertilityCare.Domain.Entities;
 using FertilityCare.Domain.Enums;
 using FertilityCare.Infrastructure.Configurations;
 using FertilityCare.Infrastructure.Identity;
@@ -180,17 +181,85 @@ namespace FertilityCare.Infrastructure.Services
             }
         }
 
-        public Task<AuthResult> RefreshTokenAsync(RefreshTokenRequest request)
+        public async Task<AuthResult> RefreshTokenAsync(RefreshTokenRequest request)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var principal = _jwtService.GetPrincipalFromExpiredToken(request.AccessToken);
+                if(principal is null)
+                {
+                    return AuthResult.Failed("Invalid access token");
+                }
+
+                var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if(string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out Guid id))
+                {
+                    return AuthResult.Failed("Invalid token claims");
+                }
+
+                var loadedUser = await _userManager.FindByIdAsync(userId);
+                if(loadedUser == null || loadedUser.RefreshToken == request.RefreshToken || loadedUser.RefreshTokenExpiryTime <= DateTime.Now)
+                {
+                    return AuthResult.Failed("Invalid refresh token");
+                }
+
+                return await GenerateTokenAsync(loadedUser);
+            }
+            catch (Exception ex)
+            {
+                return AuthResult.Failed("Token refresh failed");
+            }
         }
 
-        public Task<AuthResult> RegisterAsync(RegisterRequest request)
+        public async Task<AuthResult> RegisterAsync(RegisterRequest request)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var loadedUser = await _userManager.FindByEmailAsync(request.Email);
+                if (loadedUser is not null)
+                {
+                    return AuthResult.Failed("Email already registered");
+                }
+
+                if(!request.Password.Equals(request.ConfirmPassword, StringComparison.OrdinalIgnoreCase)) {
+                    return AuthResult.Failed("Confirm password not matches!");
+                }
+
+                var profileId = Guid.NewGuid();
+                var user = new ApplicationUser
+                {
+                    Id = Guid.NewGuid(),
+                    Email = request.Email,
+                    UserName = request.Email,
+                    EmailConfirmed = true,
+                    UserProfileId = profileId,
+                    UserProfile = new UserProfile
+                    {
+                        Id = profileId,
+                        FirstName = "None",
+                        MiddleName = "",
+                        LastName = "None",
+                        Address = "",
+                        CreatedAt = DateTime.Now,
+                        AvatarUrl = ApplicationConstant.DefaultAvatar
+                    }
+                };
+
+                var result = await _userManager.CreateAsync(user, request.Password);
+                if(!result.Succeeded)
+                {
+                    return AuthResult.Failed("Register account failed!");
+                }
+
+                return await GenerateTokenAsync(user);
+            }
+            catch (Exception ex)
+            {
+                return AuthResult.Failed("Register account failed!");
+            }
         }
 
-        private async Task<AuthResult> GenerateTokenAsync(ApplicationUser user)
+        private async Task<AuthResult> GenerateTokenAsync(ApplicationUser user) 
         {
             var roles = await _userManager.GetRolesAsync(user);
             var claims = new List<Claim>
