@@ -1,4 +1,5 @@
-﻿using FertilityCare.Infrastructure.Services;
+﻿using Azure.Core;
+using FertilityCare.Infrastructure.Services;
 using FertilityCare.UseCase.DTOs.Auths;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,6 +32,20 @@ namespace FertilityCare.WebAPI.Controllers
 
             return Ok(result.Data);
         }
+
+        [HttpPost("google-login")]
+        public async Task<ActionResult<AuthResult>> LoginGoogleAuth([FromBody] GoogleLoginRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _authService.GoogleLoginAsync(request);
+
+            if (!result.IsSuccess)
+                return BadRequest(new { message = result.ErrorMessage });
+
+            return Ok(result.Data);
+        } 
 
     }
 }
