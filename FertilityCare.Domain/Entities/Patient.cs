@@ -17,7 +17,7 @@ public class Patient
     public virtual UserProfile UserProfile { get; set; }
 
     public string? MedicalHistory { get; set; }
-
+        
     public string? Note { get; set; }
 
     public string? PartnerFullName { get; set; }    
