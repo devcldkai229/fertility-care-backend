@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace FertilityCare.Infrastructure.Services
 {
+
     public class EmailService : IEmailService
     {
         private readonly SmtpSettings _smtpSettings;
