@@ -97,7 +97,7 @@ namespace FertilityCare.WebAPI.Controllers
             return Ok(new { message = "Logged out successfully" });
         }
 
-        [Authorize]
+        [Authorize(Roles = "User")]
         [HttpPost("me")]
         public IActionResult GetCurrentUser()
         {

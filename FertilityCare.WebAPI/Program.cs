@@ -126,7 +126,7 @@ namespace FertilityCare.WebAPI
 
             app.UseHttpsRedirection();
             app.UseCors("AllowClient");
-            app.UseAuthentication();
+            //app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
             await app.RunAsync();
@@ -134,7 +134,7 @@ namespace FertilityCare.WebAPI
 
         private static async Task SeedRolesAsync(RoleManager<IdentityRole<Guid>> roleManager)
         {
-            var roles = new[] { "Admin", "Doctor", "Patient" };
+            var roles = new[] { "User", "Admin", "Doctor", "Patient" };
 
             foreach (var role in roles)
             {

@@ -64,57 +64,67 @@ namespace FertilityCare.Infrastructure.Services
                     Audience = new[] { _googleConfig.ClientId }
                 });
 
+                if (!payload.EmailVerified)
+                    return AuthResult.Failed("Email chưa được xác minh bởi Google");
+
                 var user = await _userManager.FindByEmailAsync(payload.Email);
 
-                if (user is null)
+                if (user == null)
                 {
-                    if (payload.EmailVerified)
+                    var profileId = Guid.NewGuid();
+
+                    var newUser = new ApplicationUser
                     {
-                        var profileId = Guid.NewGuid();
-
-                        ApplicationUser newUser = new ApplicationUser
+                        Id = Guid.NewGuid(),
+                        UserName = payload.Email,
+                        Email = payload.Email,
+                        EmailConfirmed = true,
+                        GoogleId = payload.Subject,
+                        IsGoogleAccount = true,
+                        RefreshToken = "",
+                        UserProfileId = profileId,
+                        UserProfile = new UserProfile
                         {
-                            Id = Guid.NewGuid(),
-                            UserName = payload.Email,
-                            Email = payload.Email,
-                            EmailConfirmed = payload.EmailVerified,
-                            GoogleId = payload.Subject,
-                            IsGoogleAccount = true,
-                            UserProfileId = profileId,
-                            UserProfile = new UserProfile
-                            {
-                                Id = profileId,
-                                FirstName = payload.GivenName,
-                                MiddleName = "",
-                                LastName = payload.FamilyName,
-                                AvatarUrl = payload.Picture
-                            }
-                        };
-
-                        var createResult = await _userManager.CreateAsync(newUser);
-                        if (!createResult.Succeeded)
-                        {
-                            return AuthResult.Failed("Failed to create user account");
+                            Id = profileId,
+                            FirstName = payload.GivenName,
+                            MiddleName = "",
+                            LastName = payload.FamilyName,
+                            AvatarUrl = payload.Picture
                         }
-                    }
+                    };
+
+                    var createResult = await _userManager.CreateAsync(newUser);
+                    if (!createResult.Succeeded)
+                        return AuthResult.Failed("Tạo tài khoản thất bại");
+
+                    var roleResult = await _userManager.AddToRoleAsync(newUser, "User");
+                    if (!roleResult.Succeeded)
+                        return AuthResult.Failed("Không thể gán vai trò cho người dùng");
+
+                    newUser.LastLogin = DateTime.Now;
+                    await _userManager.UpdateAsync(newUser);
+
+                    return await GenerateTokenAsync(newUser);
                 }
-                else if (!user.IsGoogleAccount)
+
+                if (!user.IsGoogleAccount)
                 {
                     user.GoogleId = payload.Subject;
                     user.IsGoogleAccount = true;
-                    await _userManager.UpdateAsync(user);
-
                 }
 
                 user.LastLogin = DateTime.Now;
                 await _userManager.UpdateAsync(user);
+
                 return await GenerateTokenAsync(user);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
+                // Có thể log lỗi ex.Message tại đây
                 return AuthResult.Failed("Google login failed");
             }
         }
+
 
         public async Task<AuthResult> LoginAsync(LoginRequest request)
         {
@@ -233,6 +243,7 @@ namespace FertilityCare.Infrastructure.Services
                     UserName = request.Email,
                     EmailConfirmed = true,
                     UserProfileId = profileId,
+                    RefreshToken = "",
                     UserProfile = new UserProfile
                     {
                         Id = profileId,
@@ -251,10 +262,28 @@ namespace FertilityCare.Infrastructure.Services
                     return AuthResult.Failed("Register account failed!");
                 }
 
+                if (request.Role.Equals("User", StringComparison.OrdinalIgnoreCase))
+                {
+                    var roleAssignResult = await _userManager.AddToRoleAsync(user, "User");
+                    if (!roleAssignResult.Succeeded)
+                    {
+                        return AuthResult.Failed("Not assign role to user");
+                    }
+                }
+                else if (request.Role.Equals("Doctor", StringComparison.OrdinalIgnoreCase))
+                {
+                    var roleAssignResult = await _userManager.AddToRoleAsync(user, "Doctor");
+                    if (!roleAssignResult.Succeeded)
+                    {
+                        return AuthResult.Failed("Not assign role to user");
+                    }
+                }
+
                 return await GenerateTokenAsync(user);
             }
             catch (Exception ex)
             {
+                throw ex;
                 return AuthResult.Failed("Register account failed!");
             }
         }
