@@ -22,7 +22,7 @@ namespace FertilityCare.UseCase.Interfaces.Services
 
         Task<AppointmentDTO> UpdateInfoAppointmentByAppointmentIdAsync(
             Guid appointmentId, UpdateInfoAppointmentRequestDTO request);
-        Task<IEnumerable<AppointmentDTO>> GetPagedAppointmentsAsync(AppointmentQueryDTO query, PaginationRequestDTO request);
+        Task<List<AppointmentDTO>> GetPagedAppointmentsAsync(AppointmentQueryDTO query);
 
     }
 }

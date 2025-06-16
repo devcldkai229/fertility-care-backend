@@ -22,12 +22,12 @@ namespace FertilityCare.WebAPI.Controllers
 
         [HttpGet]
         public async Task<ActionResult<ApiResponse<IEnumerable<AppointmentDTO>>>> GetPagedAppointments(
-            [FromBody] AppointmentQueryDTO query, [FromQuery] PaginationRequestDTO request)
+            [FromQuery] AppointmentQueryDTO query)
         {
 
             try
             {
-                var result = await _appointmentService.GetPagedAppointmentsAsync(query, request);
+                var result = await _appointmentService.GetPagedAppointmentsAsync(query);
                 return Ok(new ApiResponse<IEnumerable<AppointmentDTO>>
                 {
                     StatusCode = 200,

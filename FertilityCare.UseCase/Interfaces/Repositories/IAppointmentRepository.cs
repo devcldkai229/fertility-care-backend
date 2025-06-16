@@ -17,6 +17,6 @@ namespace FertilityCare.UseCase.Interfaces.Repositories
 
         Task<IEnumerable<Appointment>> FindAllByStepIdAsync(long stepId);
 
-        Task<IEnumerable<Appointment>> GetPageAsync(AppointmentQueryDTO query, int page, int pageSize);
+        Task<List<Appointment>> GetPageAsync(AppointmentQueryDTO query);
     }
 }

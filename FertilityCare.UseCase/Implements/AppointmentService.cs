@@ -59,9 +59,10 @@ namespace FertilityCare.UseCase.Implements
             return appointments.Select(a => a.MapToAppointmentDTO()).ToList();
         }
 
-        public async Task<IEnumerable<AppointmentDTO>> GetPagedAppointmentsAsync(AppointmentQueryDTO query, PaginationRequestDTO request)
+        public async Task<List<AppointmentDTO>> GetPagedAppointmentsAsync(AppointmentQueryDTO query)
         {
-            var result = await _appointmentRepository.GetPageAsync(query, request.Page, request.PageSize);
+            query.PageSize = 8;
+            var result = await _appointmentRepository.GetPageAsync(query);
             return result.Select(x => x.MapToAppointmentDTO()).ToList();
         }
 
