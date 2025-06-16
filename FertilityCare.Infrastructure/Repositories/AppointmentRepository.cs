@@ -50,19 +50,19 @@ namespace FertilityCare.Infrastructure.Repositories
             return await _context.Appointments.Where(x => x.OrderStepId == stepId).ToListAsync();
         }
 
-        public async Task<IEnumerable<Appointment>> GetPageAsync(AppointmentQueryDTO query, int page, int pageSize)
+        public async Task<List<Appointment>> GetPageAsync(AppointmentQueryDTO query)
         {
             var baseQuery = _context.Appointments.AsQueryable();
+
             if(!string.IsNullOrWhiteSpace(query.AppointmentDate))
             {
                 baseQuery = baseQuery
                     .Where(x => x.AppointmentDate == DateOnly.Parse(query.AppointmentDate));
             }
-            var item = await baseQuery
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize) 
+            return await baseQuery
+                .Skip((query.PageNumber - 1) * query.PageSize)
+                .Take(query.PageSize)
                 .ToListAsync();
-            return item;
         }
 
         public async Task<Appointment> FindByIdAsync(Guid id)
