@@ -14,7 +14,7 @@ namespace FertilityCare.Domain.Entities
         public Guid DoctorId { get; set; }
         public virtual Doctor Doctor { get; set; }
         public Guid TreatmentServiceId { get; set; }
-        public virtual TreatmentService TreatmentServiceEntity { get; set; }
+        public virtual TreatmentService TreatmentService { get; set; }
         public bool Status { get; set; }
         public decimal Rating { get; set; }
         public string? Comment { get; set; }
