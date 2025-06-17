@@ -1,0 +1,14 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using FertilityCare.UseCase.DTOs.Blogs;
+
+namespace FertilityCare.UseCase.Interfaces.Services
+{
+    public interface IBlogService
+    {
+        Task<BlogDTO> CreateNewBlog(CreateBlogRequestDTO request);
+    }
+}

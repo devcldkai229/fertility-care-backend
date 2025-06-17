@@ -10,5 +10,6 @@ namespace FertilityCare.UseCase.Interfaces.Repositories
     public interface IPrescriptionRepository : IBaseRepository<Prescription, Guid>
     {
         Task<IEnumerable<Prescription>> FindPrescriptionsByOrderIdAsync(Guid orderId);
+        Task<IEnumerable<Prescription>> FindPrescriptionsByPatientIdAsync(Guid patientId);
     }
 }
