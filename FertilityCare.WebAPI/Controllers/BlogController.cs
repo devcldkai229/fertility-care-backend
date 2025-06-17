@@ -63,5 +63,35 @@ namespace FertilityCare.WebAPI.Controllers
                 });
             }
         }
+        [HttpGet]
+        [Route("doctor/{doctorId}")]
+        public async Task<ActionResult<ApiResponse<List<BlogDTO>>>> GetBlogsByDoctorId([FromRoute] string doctorId, [FromQuery] int pageNumber, int pageSize)
+        {
+            try
+            {
+                var blogs = await _blogService.GetBlogByDoctorId(new BlogQueryDTO
+                {
+                    DoctorId = doctorId,
+                    PageNumber = pageNumber,
+                    PageSize = pageSize
+                });
+                return Ok(new ApiResponse<List<BlogDTO>>
+                {
+                    StatusCode = 200,
+                    Message = "Get blogs by doctor id successfully",
+                    Data = blogs,
+                    ResponsedAt = DateTime.Now
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponse<List<BlogDTO>>
+                {
+                    StatusCode = 400,
+                    Message = ex.Message,
+                    ResponsedAt = DateTime.Now
+                });
+            }
+        }
     }
 }
