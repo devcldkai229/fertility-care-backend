@@ -12,6 +12,6 @@ namespace FertilityCare.UseCase.Interfaces.Services
         Task<BlogDTO> CreateNewBlog(CreateBlogRequestDTO request);
         Task<BlogDTO> UpdateBlog(string blogId, CreateBlogRequestDTO request);
         Task<List<BlogDTO>> GetBlogByDoctorId(BlogQueryDTO query);
-        Task<List<BlogDTO>> GetAllBlog(BlogQueryDTO query);// hard code pageNumber = 0; pageSize = 7;
+        Task<List<BlogDTO>> GetAllBlog(BlogQueryDTO query);
     }
 }

@@ -96,10 +96,5 @@ namespace FertilityCare.Infrastructure.Repositories
             return items;
         }
 
-        public async Task<Doctor?> FindByUserProfileIdAsync(Guid userProfile)
-        {
-            return await _context.Doctors.SingleOrDefaultAsync(d => d.UserProfileId.Equals(userProfile));
-            
-        }
     }
 }

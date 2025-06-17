@@ -14,6 +14,6 @@ namespace FertilityCare.UseCase.Interfaces.Repositories
 
         Task<IEnumerable<Doctor>> GetPagedAsync(int pageNumber, int pageSize);
 
-        Task<Doctor> FindByUserProfileIdAsync(Guid userProfile);
+
     }
 }

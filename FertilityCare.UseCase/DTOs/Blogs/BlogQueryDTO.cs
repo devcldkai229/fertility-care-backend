@@ -8,8 +8,8 @@ namespace FertilityCare.UseCase.DTOs.Blogs
 {
     public class BlogQueryDTO
     {
-        public string DoctorId { get; set; }
-        public int PageNumber { get; set; }
-        public int PageSize { get; set; }
+        public string doctorId { get; set; }
+        public int pageNumber { get; set; }
+        public int pageSize { get; set; }
     }
 }

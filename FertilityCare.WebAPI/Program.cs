@@ -113,8 +113,6 @@ namespace FertilityCare.WebAPI
             builder.Services.AddScoped<IEmailService, EmailService>();
             builder.Services.AddScoped<IJwtService, JwtService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
-            builder.Services.AddScoped<IBlogRepository, BlogRepository>();
-            builder.Services.AddScoped<IBlogService, BlogService>();
 
             var app = builder.Build();
 
