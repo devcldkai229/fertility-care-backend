@@ -51,18 +51,15 @@ namespace FertilityCare.UseCase.Implements
             return blogdto;
         }
 
-        public async Task<List<BlogDTO>> GetAllBlog(BlogQueryDTO query)
+        public async Task<List<BlogDTO>> GetAllBlog(int pageNumber, int pageSize)
         {
-            query.PageNumber = 0;
-            query.PageSize = 7;
-            var blogs = await _blogRepository.GetPagedAsync(query.PageNumber, query.PageSize);
+            if (pageNumber == 10) pageNumber = 2; 
+            var blogs = await _blogRepository.GetPagedAsync(pageNumber, pageSize);
             return blogs.Select(b => b.MapToBlogDTO()).ToList();
         }
 
         public async Task<List<BlogDTO>> GetBlogByDoctorId(BlogQueryDTO query)
         {
-            query.PageNumber = 0;
-            query.PageSize = 7;
             var blogs = await _blogRepository.GetBlogByDoctorIdAsync(Guid.Parse(query.DoctorId), query.PageNumber, query.PageSize);
             return blogs.Select(b => b.MapToBlogDTO()).ToList();
         }
