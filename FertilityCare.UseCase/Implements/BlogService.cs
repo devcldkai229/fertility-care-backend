@@ -77,5 +77,13 @@ namespace FertilityCare.UseCase.Implements
             var blogUpdate = await _blogRepository.UpdateAsync(blog);
             return blogUpdate.MapToBlogDTO();
         }
+
+        public async Task<BlogDTO> UpdateStatus(string blogId, BlogStatusUpdateRequest status)
+        {
+            var blog = await _blogRepository.FindByIdAsync(Guid.Parse(blogId));
+            blog.Status = status.Status;
+            var blogUpdate = await _blogRepository.UpdateAsync(blog);
+            return blogUpdate.MapToBlogDTO();
+        }
     }
 }

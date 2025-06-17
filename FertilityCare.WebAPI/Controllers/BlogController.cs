@@ -1,4 +1,5 @@
-﻿using FertilityCare.UseCase.DTOs.Blogs;
+﻿using FertilityCare.Domain.Enums;
+using FertilityCare.UseCase.DTOs.Blogs;
 using FertilityCare.UseCase.Interfaces.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -105,6 +106,31 @@ namespace FertilityCare.WebAPI.Controllers
                 {
                     StatusCode = 200,
                     Message = "Update blog successfully",
+                    Data = blog,
+                    ResponsedAt = DateTime.Now
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponse<BlogDTO>
+                {
+                    StatusCode = 400,
+                    Message = ex.Message,
+                    ResponsedAt = DateTime.Now
+                });
+            }
+        }
+        [HttpPut]
+        [Route("{blogId}/status")]
+        public async Task<ActionResult<ApiResponse<BlogDTO>>> UpdateStatus([FromRoute] string blogId, [FromBody] BlogStatusUpdateRequest status)
+        {
+            try
+            {
+                var blog = await _blogService.UpdateStatus(blogId, status);
+                return Ok(new ApiResponse<BlogDTO>
+                {
+                    StatusCode = 200,
+                    Message = "Update blog status successfully",
                     Data = blog,
                     ResponsedAt = DateTime.Now
                 });

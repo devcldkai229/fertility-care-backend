@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FertilityCare.Domain.Enums;
 using FertilityCare.UseCase.DTOs.Blogs;
 
 namespace FertilityCare.UseCase.Interfaces.Services
@@ -13,5 +14,6 @@ namespace FertilityCare.UseCase.Interfaces.Services
         Task<BlogDTO> UpdateBlog(string blogId, CreateBlogRequestDTO request);
         Task<List<BlogDTO>> GetBlogByDoctorId(BlogQueryDTO query);
         Task<List<BlogDTO>> GetAllBlog(int pageNumber, int pageSize);
+        Task<BlogDTO> UpdateStatus(string blogId, BlogStatusUpdateRequest status);
     }
 }
