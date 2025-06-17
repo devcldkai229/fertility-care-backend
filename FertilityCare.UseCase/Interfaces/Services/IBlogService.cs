@@ -10,5 +10,8 @@ namespace FertilityCare.UseCase.Interfaces.Services
     public interface IBlogService
     {
         Task<BlogDTO> CreateNewBlog(CreateBlogRequestDTO request);
+        Task<BlogDTO> UpdateBlog(string blogId, CreateBlogRequestDTO request);
+        Task<List<BlogDTO>> GetBlogByDoctorId(BlogQueryDTO query);
+        Task<List<BlogDTO>> GetAllBlog(BlogQueryDTO query);
     }
 }
