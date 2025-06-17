@@ -31,6 +31,8 @@ public class OrderStep
 
     public decimal? TotalAmount { get; set; } = 0;
 
+    public virtual List<Appointment> Appointments { get; set; }
+
     public DateTime CreatedAt { get; set; } = DateTime.Now;
 
     public DateTime? UpdatedAt { get; set; }

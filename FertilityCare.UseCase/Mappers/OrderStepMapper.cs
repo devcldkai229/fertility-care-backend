@@ -24,6 +24,7 @@ namespace FertilityCare.UseCase.Mappers
                 EndDate = orderStep.EndDate?.ToString("dd/MM/yyyy"),
                 PaymentStatus = orderStep.PaymentStatus.ToString(),
                 TotalAmount = orderStep.TotalAmount,
+                Appointments = orderStep.Appointments.Select(x => x.MapToAppointmentFollowStep()).ToList(),
                 CreatedAt = orderStep.CreatedAt.ToString("dd/MM/yyyy HH:mm:ss"),
                 UpdatedAt = orderStep.UpdatedAt?.ToString("dd/MM/yyyy HH:mm:ss")
             };
