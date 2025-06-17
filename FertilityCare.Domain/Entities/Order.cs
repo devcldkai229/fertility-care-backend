@@ -40,5 +40,7 @@ namespace FertilityCare.Domain.Entities
         public DateTime? UpdatedAt { get; set; }
 
         public virtual List<OrderStep>? OrderSteps { get; set; }
+
+        public virtual List<EmbryoTransfer> Embryos { get; set; }
     }
 }

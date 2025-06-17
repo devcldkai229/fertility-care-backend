@@ -126,7 +126,7 @@ namespace FertilityCare.WebAPI
 
             app.UseHttpsRedirection();
             app.UseCors("AllowClient");
-            //app.UseAuthentication();
+            app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
             await app.RunAsync();

@@ -11,7 +11,5 @@ public enum EmbryoStatus
 
     Transferred,
 
-    Frozen,
-
     Discarded
 }
