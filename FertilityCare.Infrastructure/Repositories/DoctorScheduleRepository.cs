@@ -92,9 +92,32 @@ namespace FertilityCare.Infrastructure.Repositories
             var parsedDate = DateOnly.Parse(workDate);
             var parsedDoctorId = Guid.Parse(doctorId);
 
-            return await _context.DoctorSchedules
-                .Where(ds => ds.WorkDate == parsedDate && ds.DoctorId == parsedDoctorId)
+            // Lấy tất cả các schedules hợp lệ
+            var schedules = await _context.DoctorSchedules
+                .Include(ds => ds.Doctor)
+                .Include(ds => ds.Slot)
+                .Where(ds =>
+                    ds.WorkDate == parsedDate &&
+                    ds.DoctorId == parsedDoctorId &&
+                    ds.IsAcceptingPatients == true)
                 .ToListAsync();
+
+            // Lọc lại theo số lượng appointments thực tế
+            var validSchedules = new List<DoctorSchedule>();
+
+            foreach (var schedule in schedules)
+            {
+                var appointmentCount = await _context.Appointments
+                    .CountAsync(a => a.DoctorScheduleId == schedule.Id);
+
+                if (!schedule.MaxAppointments.HasValue || appointmentCount < schedule.MaxAppointments.Value)
+                {
+                    validSchedules.Add(schedule);
+                }
+            }
+
+            return validSchedules;
         }
+
     }
 }
