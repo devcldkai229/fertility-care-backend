@@ -27,6 +27,10 @@ public class OrderStep
 
     public DateOnly? EndDate { get; set; }
 
+    public PaymentStatus PaymentStatus { get; set; } = PaymentStatus.Pending;
+
+    public decimal? TotalAmount { get; set; } = 0;
+
     public DateTime CreatedAt { get; set; } = DateTime.Now;
 
     public DateTime? UpdatedAt { get; set; }

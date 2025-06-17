@@ -26,7 +26,7 @@ namespace FertilityCare.UseCase.DTOs.OrderSteps
 
         public decimal? TotalAmount { get; set; }
 
-        public List<AppointmentDTO> Appointments { get; set; } = new List<AppointmentDTO>();
+        public List<AppointmentFollowStep> Appointments { get; set; } = new List<AppointmentFollowStep>();
 
         public string? EndDate { get; set; }
 
