@@ -4,6 +4,7 @@ using FertilityCare.Infrastructure.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FertilityCare.Infrastructure.Migrations
 {
     [DbContext(typeof(FertilityCareDBContext))]
-    partial class FertilityCareDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250617074608_AddingPStatusAndTAmountOrderSteps")]
+    partial class AddingPStatusAndTAmountOrderSteps
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1180,7 +1183,7 @@ namespace FertilityCare.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("FertilityCare.Domain.Entities.OrderStep", "OrderStep")
-                        .WithMany("Appointments")
+                        .WithMany()
                         .HasForeignKey("OrderStepId")
                         .OnDelete(DeleteBehavior.SetNull);
 
@@ -1496,11 +1499,6 @@ namespace FertilityCare.Infrastructure.Migrations
             modelBuilder.Entity("FertilityCare.Domain.Entities.Order", b =>
                 {
                     b.Navigation("OrderSteps");
-                });
-
-            modelBuilder.Entity("FertilityCare.Domain.Entities.OrderStep", b =>
-                {
-                    b.Navigation("Appointments");
                 });
 
             modelBuilder.Entity("FertilityCare.Domain.Entities.Prescription", b =>

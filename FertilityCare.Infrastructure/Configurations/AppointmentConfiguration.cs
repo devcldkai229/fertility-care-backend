@@ -72,7 +72,7 @@ public class AppointmentConfiguration : IEntityTypeConfiguration<Appointment>
             .OnDelete(DeleteBehavior.SetNull);
 
         builder.HasOne(a => a.OrderStep)
-            .WithMany()
+            .WithMany(s => s.Appointments)
             .HasForeignKey(a => a.OrderStepId)
             .OnDelete(DeleteBehavior.SetNull);
     }

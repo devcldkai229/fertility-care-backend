@@ -48,6 +48,13 @@ namespace FertilityCare.Infrastructure.Repositories
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Prescription>> FindPrescriptionsByPatientIdAsync(Guid patientId)
+        {
+            return await _context.Prescriptions
+                .Where(p => p.OrderId .Equals( _context.Orders.FirstOrDefault(o => o.PatientId.Equals( patientId))))
+                .ToListAsync();
+        }
+
         public async Task<bool> IsExistAsync(Guid id)
         {
             var loadedPrescription = await _context.Prescriptions.FindAsync(id);

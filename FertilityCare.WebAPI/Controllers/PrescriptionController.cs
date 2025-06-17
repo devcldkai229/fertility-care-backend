@@ -10,9 +10,35 @@ namespace FertilityCare.WebAPI.Controllers
     public class PrescriptionController : ControllerBase
     {
         private readonly IPrescriptionService _prescriptionService;
+
         public PrescriptionController(IPrescriptionService prescriptionService)
         {
             _prescriptionService = prescriptionService;
+        }
+        [HttpGet("by-patient")]
+        public async Task<ActionResult<ApiResponse<IEnumerable<PrescriptionDetailDTO>>>> GetPrescriptionByPatientId([FromQuery]string patientId)
+        {
+            try
+            {
+                var result = await _prescriptionService.GetPrescriptionByPatientId(patientId);
+                return Ok(new ApiResponse<IEnumerable<PrescriptionDetailDTO>>
+                {
+                    StatusCode = 200,
+                    Message = "",
+                    Data = result,
+                    ResponsedAt = DateTime.Now
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponse<string>
+                {
+                    StatusCode = 400,
+                    Message = ex.Message,
+                    Data = null,
+                    ResponsedAt = DateTime.Now
+                });
+            }
         }
         [HttpPost]
         public async Task<ActionResult<ApiResponse<PrescriptionDTO>>> CreatePrecription([FromBody] CreatePrecriptionRequestDTO request)
@@ -39,7 +65,7 @@ namespace FertilityCare.WebAPI.Controllers
                 });
             }
         }
-        [HttpGet]
+        [HttpGet("by-order")]
         public async Task<ActionResult<ApiResponse<IEnumerable<PrescriptionDTO>>>> FindPrescriptionByOrderId([FromQuery] string orderId)
         {
             try

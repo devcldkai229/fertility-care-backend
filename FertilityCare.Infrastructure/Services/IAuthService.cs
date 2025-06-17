@@ -120,7 +120,6 @@ namespace FertilityCare.Infrastructure.Services
             }
             catch (Exception ex)
             {
-                // Có thể log lỗi ex.Message tại đây
                 return AuthResult.Failed("Google login failed");
             }
         }
@@ -314,7 +313,8 @@ namespace FertilityCare.Infrastructure.Services
                 ExpiresAt = DateTime.UtcNow.AddMinutes(_jwtConfig.ExpirationInMinutes),
                 User = new UserDto
                 {
-                    Id = user.Id,
+                    Id = user.Id.ToString(),
+                    ProfileId = user.UserProfileId.ToString(),
                     Email = user.Email,
                     FirstName = user.UserProfile.FirstName,
                     MiddleName = user.UserProfile.MiddleName,
