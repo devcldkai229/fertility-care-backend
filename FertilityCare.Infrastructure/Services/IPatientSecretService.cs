@@ -25,8 +25,6 @@ namespace FertilityCare.Infrastructure.Services
 
         private readonly IUserProfileRepository _profileRepository;
 
-        private readonly UserManager<ApplicationUser> _userManager;
-
         public PatientSecretService(IPatientRepository patientRepository, 
             IUserProfileRepository profileRepository, 
             UserManager<ApplicationUser> userManager,
@@ -34,7 +32,6 @@ namespace FertilityCare.Infrastructure.Services
         {
             _patientRepository = patientRepository;
             _profileRepository = profileRepository;
-            _userManager = userManager;
             _orderRepository = orderRepository;
         }
 

@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Security.Claims;
+using FertilityCare.Infrastructure.Services;
 using FertilityCare.UseCase.DTOs.Patients;
 using FertilityCare.UseCase.Interfaces.Services;
 using Microsoft.AspNetCore.Http;
@@ -11,10 +13,15 @@ namespace FertilityCare.WebAPI.Controllers
     public class PatientController : ControllerBase
     {
         private readonly IPatientService _patientService;
-        public PatientController(IPatientService patientService)
+
+        private readonly IPatientSecretService _patientSecretService;
+
+        public PatientController(IPatientService patientService, IPatientSecretService patientSecretService)
         {
             _patientService = patientService;
+            _patientSecretService = patientSecretService;
         }
+
         [HttpGet]
         public async Task<ActionResult<ApiResponse<IEnumerable<PatientDTO>>>> GetAllAynsc()
         {
@@ -66,6 +73,34 @@ namespace FertilityCare.WebAPI.Controllers
                     ResponsedAt = DateTime.Now
                 });
             }
+        }
+
+        [HttpPost("me")]
+        public async Task<ActionResult<ApiResponse<PatientSecretInfo>>> GetPatientSecretInfo()
+        {
+            var id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            try
+            {
+                var patientInfo = await _patientSecretService.GetPatientByUserIdAsync(id);
+                return Ok(new ApiResponse<PatientSecretInfo>
+                {
+                    StatusCode = 200,
+                    Message = "",
+                    Data = patientInfo,
+                    ResponsedAt = DateTime.Now
+                });
+            }
+            catch(Exception e)
+            {
+                return BadRequest(new ApiResponse<string>
+                {
+                    StatusCode = 400,
+                    Message = e.Message,
+                    Data = null,
+                    ResponsedAt = DateTime.Now
+                });
+            }
+           
         }
     }
 }
