@@ -21,17 +21,21 @@ namespace FertilityCare.Infrastructure.Services
     {
         private readonly IPatientRepository _patientRepository;
 
+        private readonly IOrderRepository _orderRepository;
+
         private readonly IUserProfileRepository _profileRepository;
 
         private readonly UserManager<ApplicationUser> _userManager;
 
         public PatientSecretService(IPatientRepository patientRepository, 
             IUserProfileRepository profileRepository, 
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            IOrderRepository orderRepository)
         {
             _patientRepository = patientRepository;
             _profileRepository = profileRepository;
             _userManager = userManager;
+            _orderRepository = orderRepository;
         }
 
         public async Task<PatientSecretInfo> GetPatientByUserIdAsync(string userId)
@@ -42,8 +46,19 @@ namespace FertilityCare.Infrastructure.Services
                 throw new NotFoundException("Profile not found!");
             }
 
-
+            var patient = await _patientRepository.FindByProfileIdAsync(profile.Id);
+            if (patient is null)
+            {
+                return null;
+            }
             
+            var orders = await _orderRepository.FindAllByPatientIdAsync(patient.Id);
+            return new PatientSecretInfo
+            {
+                PatientId = patient.Id.ToString(),
+                UserProfileId = profile.Id.ToString(),
+                OrderIds = orders.Select(o => o.Id.ToString()).ToList(),
+            };
         }
     }
 }

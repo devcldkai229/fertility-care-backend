@@ -13,7 +13,7 @@ namespace FertilityCare.UseCase.DTOs.Patients
 
         public string UserProfileId { get; set; } = string.Empty;
 
-        public List<string> OrdersId { get; set; } = new List<string>();
+        public List<string> OrderIds { get; set; } = new List<string>();
 
     }
 }
