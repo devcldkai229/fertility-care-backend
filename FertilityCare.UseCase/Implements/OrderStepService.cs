@@ -32,7 +32,7 @@ namespace FertilityCare.UseCase.Implements
 
             var steps = await _stepRepository.FindAllByOrderIdAsync(orderId);
 
-            return steps.Select(step => step.MapToStepDTO()).ToList();
+            return steps.OrderBy(x => x.TreatmentStep.StepOrder).Select(step => step.MapToStepDTO()).ToList();
         }
 
         public async Task<(OrderStepDTO, string)> MarkStatusByStepIdAsync(long stepId, string status)
