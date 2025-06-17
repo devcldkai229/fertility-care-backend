@@ -47,8 +47,14 @@ namespace FertilityCare.Infrastructure.Repositories
 
         public async Task<List<Blog>> GetBlogByDoctorIdAsync(Guid doctorId, int pageNumber, int pageaSize)
         {
-            return  await _context.Blogs
-                .Where(b => b.UserProfileId == doctorId)
+            var doctor = await _context.Doctors.FirstOrDefaultAsync(d => d.Id == doctorId);
+            if (doctor == null)
+            {
+                throw new NotFoundException($"Doctor with id {doctorId} not found.");
+            }
+
+            return await _context.Blogs
+                .Where(b => b.UserProfileId == doctor.UserProfileId)
                 .Skip((pageNumber - 1) * pageaSize)
                 .Take(pageaSize)
                 .ToListAsync();

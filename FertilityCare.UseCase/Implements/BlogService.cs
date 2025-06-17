@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FertilityCare.Domain.Enums;
+using FertilityCare.Shared.Exceptions;
 using FertilityCare.UseCase.DTOs.Blogs;
 using FertilityCare.UseCase.Interfaces.Repositories;
 using FertilityCare.UseCase.Interfaces.Services;
+using FertilityCare.UseCase.Mappers;
 
 namespace FertilityCare.UseCase.Implements
 {
@@ -26,10 +28,15 @@ namespace FertilityCare.UseCase.Implements
         public async Task<BlogDTO> CreateNewBlog(CreateBlogRequestDTO request)
         {
             var userProfile = await _userProfileRepository.FindByIdAsync(Guid.Parse(request.UserProfileId));
-            var status = (_doctorRepository.FindByIdAsync(Guid.Parse(request.UserProfileId)) is null)
+            if (userProfile is null)
+            {
+                throw new NotFoundException("User profile not found");
+            }
+            var doctor = await _doctorRepository.FindByUserProfileIdAsync(Guid.Parse(request.UserProfileId));
+            var status =  (doctor is null)
                 ? BlogStatus.Process : BlogStatus.Approved;
 
-            return new BlogDTO()
+            var blogdto = new BlogDTO()
             {
                 UserProfileId = request.UserProfileId,
                 UserName = userProfile.FirstName + " " + userProfile.MiddleName + " " + userProfile.LastName,
@@ -40,21 +47,35 @@ namespace FertilityCare.UseCase.Implements
                 ImageUrl = request.ImageUrl,
                 AvatarUrl = userProfile.AvatarUrl
             };
+            await _blogRepository.SaveAsync(blogdto.MaptoBlog());
+            return blogdto;
         }
 
-        public Task<List<BlogDTO>> GetAllBlog(BlogQueryDTO query)
+        public async Task<List<BlogDTO>> GetAllBlog(BlogQueryDTO query)
         {
-            throw new NotImplementedException();
+            query.PageNumber = 0;
+            query.PageSize = 7;
+            var blogs = await _blogRepository.GetPagedAsync(query.PageNumber, query.PageSize);
+            return blogs.Select(b => b.MapToBlogDTO()).ToList();
         }
 
-        public Task<List<BlogDTO>> GetBlogByDoctorId(BlogQueryDTO query)
+        public async Task<List<BlogDTO>> GetBlogByDoctorId(BlogQueryDTO query)
         {
-            throw new NotImplementedException();
+            query.PageNumber = 0;
+            query.PageSize = 7;
+            var blogs = await _blogRepository.GetBlogByDoctorIdAsync(Guid.Parse(query.DoctorId), query.PageNumber, query.PageSize);
+            return blogs.Select(b => b.MapToBlogDTO()).ToList();
         }
 
-        public Task<BlogDTO> UpdateBlog(string blogId, CreateBlogRequestDTO request)
+        public async Task<BlogDTO> UpdateBlog(string blogId, CreateBlogRequestDTO request)
         {
-            throw new NotImplementedException();
+            var blog = await _blogRepository.FindByIdAsync(Guid.Parse(blogId));
+            if (blog is null)
+            {
+                throw new NotFoundException("Blog not found");
+            }
+            var blogUpdate = await _blogRepository.UpdateAsync(blog);
+            return blogUpdate.MapToBlogDTO();
         }
     }
 }
