@@ -14,6 +14,7 @@ namespace FertilityCare.UseCase.Mappers
         {
             return new Blog()
             {
+                Id = Guid.Parse(blog.Id),
                 UserProfileId = Guid.Parse(blog.UserProfileId),
                 Content = blog.Content,
                 Status = blog.Status,
@@ -26,8 +27,9 @@ namespace FertilityCare.UseCase.Mappers
         {
             return new BlogDTO()
             {
+                Id = blog.Id.ToString(),
                 UserProfileId = blog.UserProfileId.ToString(),
-                UserName = blog.UserProfile.FirstName +" "+ blog.UserProfile.MiddleName + " " + blog.UserProfile.LastName,
+                UserName = blog.UserProfile.FirstName + " " + blog.UserProfile.MiddleName + " " + blog.UserProfile.LastName,
                 Content = blog.Content,
                 Status = blog.Status,
                 CreatedAt = blog.CreatedAt,

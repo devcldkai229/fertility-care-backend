@@ -38,6 +38,7 @@ namespace FertilityCare.UseCase.Implements
 
             var blogdto = new BlogDTO()
             {
+                Id = Guid.NewGuid().ToString(),
                 UserProfileId = request.UserProfileId,
                 UserName = userProfile.FirstName + " " + userProfile.MiddleName + " " + userProfile.LastName,
                 Content = request.Content,
@@ -71,6 +72,8 @@ namespace FertilityCare.UseCase.Implements
             {
                 throw new NotFoundException("Blog not found");
             }
+            blog.Content = request.Content;
+            blog.UpdatedAt = DateTime.Now;
             var blogUpdate = await _blogRepository.UpdateAsync(blog);
             return blogUpdate.MapToBlogDTO();
         }

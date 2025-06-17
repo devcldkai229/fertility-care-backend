@@ -93,5 +93,31 @@ namespace FertilityCare.WebAPI.Controllers
                 });
             }
         }
+
+        [HttpPut]
+        [Route("{blogId}")]
+        public async Task<ActionResult<ApiResponse<BlogDTO>>> UpdateBlog([FromRoute] string blogId, [FromBody] CreateBlogRequestDTO request)
+        {
+            try
+            {
+                var blog = await _blogService.UpdateBlog(blogId, request);
+                return Ok(new ApiResponse<BlogDTO>
+                {
+                    StatusCode = 200,
+                    Message = "Update blog successfully",
+                    Data = blog,
+                    ResponsedAt = DateTime.Now
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponse<BlogDTO>
+                {
+                    StatusCode = 400,
+                    Message = ex.Message,
+                    ResponsedAt = DateTime.Now
+                });
+            }
+        }
     }
 }
