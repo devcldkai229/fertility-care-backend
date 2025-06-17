@@ -24,7 +24,7 @@ namespace FertilityCare.UseCase.Mappers
         }
         public static Prescription MapToPrescription(this PrescriptionDTO prescriptionDTO)
         {
-            return new Domain.Entities.Prescription()
+            return new Prescription()
             {
                 Id = Guid.Parse(prescriptionDTO.Id),
                 OrderId = Guid.Parse(prescriptionDTO.OrderId),
@@ -32,6 +32,7 @@ namespace FertilityCare.UseCase.Mappers
                 Note = prescriptionDTO.Note,
                 PrescriptionItems = prescriptionDTO.PrescriptionItems?.Select(item => item.MapToPrescriptionItem()).ToList() ?? new List<PrescriptionItem>()
             };
-        }                                                   
+        }
+
     }
 }

@@ -9,6 +9,7 @@ namespace FertilityCare.UseCase.Interfaces.Repositories
 {
     public interface IBlogRepository : IBaseRepository<Blog, Guid>
     {
-        public Task<List<Blog>> GetBlogByDoctor
+        public Task<List<Blog>> GetBlogByDoctorIdAsync(Guid doctorId, int pageNumber, int pageaSize);
+        public Task<List<Blog>> GetPagedAsync(int pageNumber, int pageSize);// hardcode 7 blog (pageSize)
     }
 }
