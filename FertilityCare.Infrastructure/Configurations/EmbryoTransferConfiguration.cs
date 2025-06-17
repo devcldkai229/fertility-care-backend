@@ -21,10 +21,6 @@ public class EmbryoTransferConfiguration : IEntityTypeConfiguration<EmbryoTransf
             .HasMaxLength(255)
             .IsRequired();
 
-        builder.Property(e => e.EggGrade)
-            .HasMaxLength(255)
-            .IsRequired();
-
         builder.Property(e => e.IsViable)
             .IsRequired();
 
@@ -37,12 +33,6 @@ public class EmbryoTransferConfiguration : IEntityTypeConfiguration<EmbryoTransf
         builder.Property(e => e.TransferDate)
             .IsRequired();
 
-        builder.Property(e => e.PregnancyResultNote)
-            .HasColumnType("ntext");
-
-        builder.Property(e => e.Note)
-            .HasColumnType("ntext");
-
         builder.Property(e => e.CreatedAt)
             .HasDefaultValueSql("GETDATE()");
 
@@ -50,5 +40,9 @@ public class EmbryoTransferConfiguration : IEntityTypeConfiguration<EmbryoTransf
             .WithMany()
             .HasForeignKey(e => e.AppointmentId)
             .OnDelete(DeleteBehavior.SetNull);
+
+        builder.HasOne(e => e.Order)
+            .WithMany(o => o.Embryos)
+            .HasForeignKey(e => e.OrderId);
     }
 }

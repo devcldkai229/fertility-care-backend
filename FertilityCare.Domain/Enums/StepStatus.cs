@@ -12,6 +12,8 @@ public enum StepStatus
 
     InProgress,     
 
+    ReTranfer,
+
     Completed,
 
     Failed    

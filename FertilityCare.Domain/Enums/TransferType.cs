@@ -8,8 +8,9 @@ namespace FertilityCare.Domain.Enums
 {
     public enum TransferType
     {
+
         Fresh,
 
-        Frozen
+        Frozen 
     }
 }

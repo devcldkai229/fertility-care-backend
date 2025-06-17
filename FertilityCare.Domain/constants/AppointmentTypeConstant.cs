@@ -8,7 +8,7 @@ namespace FertilityCare.Domain.constants
 {
     public class AppointmentTypeConstant
     {
-
+       
 
     }
 }
