@@ -46,7 +46,7 @@ namespace FertilityCare.Infrastructure.Services
             var patient = await _patientRepository.FindByProfileIdAsync(profile.Id);
             if (patient is null)
             {
-                return null;
+                throw new NotFoundException("Patient not found");
             }
             
             var orders = await _orderRepository.FindAllByPatientIdAsync(patient.Id);

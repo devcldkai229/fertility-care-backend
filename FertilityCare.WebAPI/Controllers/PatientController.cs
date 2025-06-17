@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Security.Claims;
 using FertilityCare.Infrastructure.Services;
+using FertilityCare.Shared.Exceptions;
 using FertilityCare.UseCase.DTOs.Patients;
 using FertilityCare.UseCase.Interfaces.Services;
 using Microsoft.AspNetCore.Http;
@@ -87,6 +88,21 @@ namespace FertilityCare.WebAPI.Controllers
                     StatusCode = 200,
                     Message = "",
                     Data = patientInfo,
+                    ResponsedAt = DateTime.Now
+                });
+            }
+            catch (NotFoundException)
+            {
+                return Ok(new ApiResponse<PatientSecretInfo>
+                {
+                    StatusCode = 200,
+                    Message = "",
+                    Data = new PatientSecretInfo
+                    {
+                        PatientId = null,
+                        UserProfileId = null,
+                        OrderIds = null,
+                    },
                     ResponsedAt = DateTime.Now
                 });
             }

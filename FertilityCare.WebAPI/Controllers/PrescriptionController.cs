@@ -10,10 +10,12 @@ namespace FertilityCare.WebAPI.Controllers
     public class PrescriptionController : ControllerBase
     {
         private readonly IPrescriptionService _prescriptionService;
+
         public PrescriptionController(IPrescriptionService prescriptionService)
         {
             _prescriptionService = prescriptionService;
         }
+
         [HttpPost]
         public async Task<ActionResult<ApiResponse<PrescriptionDTO>>> CreatePrecription([FromBody] CreatePrecriptionRequestDTO request)
         {
@@ -39,6 +41,7 @@ namespace FertilityCare.WebAPI.Controllers
                 });
             }
         }
+
         [HttpGet]
         public async Task<ActionResult<ApiResponse<IEnumerable<PrescriptionDTO>>>> FindPrescriptionByOrderId([FromQuery] string orderId)
         {

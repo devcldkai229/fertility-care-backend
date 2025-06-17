@@ -41,5 +41,28 @@ namespace FertilityCare.UseCase.Mappers
             };
         }
 
+        public static AppointmentFollowStep MapToAppointmentFollowStep(this Appointment appointment)
+        {
+            var profilePatient = appointment.Patient?.UserProfile;
+            var profileDoctor = appointment.Doctor?.UserProfile;
+
+            return new AppointmentFollowStep
+            {
+                Id = appointment.Id.ToString(),
+                PatientName = $"{profilePatient.FirstName} {profilePatient.MiddleName} {profilePatient.LastName}" ?? string.Empty,
+                AppointmentDate = appointment.AppointmentDate.ToString("dd/MM/yyyy"),
+                Slot = appointment.DoctorSchedule?.Slot?.SlotNumber ?? -1,
+                StartTime = appointment.StartTime.ToString("HH:mm"),
+                EndTime = appointment.EndTime.ToString("HH:mm"),
+                Type = appointment.Type ?? string.Empty,
+                DoctorName = $"{profileDoctor.FirstName} {profileDoctor.MiddleName} {profileDoctor.LastName}" ?? string.Empty,
+                Status = appointment.Status.ToString(),
+                DoctorId = appointment.DoctorId.ToString(),
+                PaymentStatus = appointment.PaymentStatus.ToString(),
+                ExtraFee = appointment.Amount ?? decimal.Zero,
+                Note = appointment.Note ?? string.Empty
+            };
+        }
+
     }
 }

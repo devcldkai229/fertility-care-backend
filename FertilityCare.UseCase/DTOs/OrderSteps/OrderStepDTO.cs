@@ -1,5 +1,6 @@
 ﻿using FertilityCare.Domain.Entities;
 using FertilityCare.Domain.Enums;
+using FertilityCare.UseCase.DTOs.Appointments;
 using FertilityCare.UseCase.DTOs.TreatmentStep;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,12 @@ namespace FertilityCare.UseCase.DTOs.OrderSteps
         public string? Status { get; set; }
 
         public string? StartDate { get; set; }
+
+        public string? PaymentStatus { get; set; }
+
+        public decimal? TotalAmount { get; set; }
+
+        public List<AppointmentDTO> Appointments { get; set; } = new List<AppointmentDTO>();
 
         public string? EndDate { get; set; }
 
