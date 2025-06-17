@@ -2,6 +2,7 @@
 using FertilityCare.Infrastructure.Identity;
 using FertilityCare.Shared.Exceptions;
 using FertilityCare.UseCase.Interfaces.Repositories;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -16,9 +17,13 @@ namespace FertilityCare.Infrastructure.Repositories
 
         private readonly FertilityCareDBContext _context;
 
-        public UserProfileRepository(FertilityCareDBContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public UserProfileRepository(FertilityCareDBContext context,
+            UserManager<ApplicationUser> userManager) 
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public Task DeleteByIdAsync(Guid id)
@@ -40,6 +45,12 @@ namespace FertilityCare.Infrastructure.Repositories
             }
 
             return profile;
+        }
+
+        public async Task<UserProfile?> FindByUserIdAsync(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            return user?.UserProfile;
         }
 
         public async Task<bool> IsExistAsync(Guid id)

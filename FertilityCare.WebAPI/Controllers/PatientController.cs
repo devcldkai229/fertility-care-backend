@@ -41,6 +41,7 @@ namespace FertilityCare.WebAPI.Controllers
             }
 
         }
+
         [HttpGet("{patientId}")]
         public async Task<ActionResult<ApiResponse<PatientDTO>>> GetPatientByIdAsync([FromRoute]string patientId)
         {

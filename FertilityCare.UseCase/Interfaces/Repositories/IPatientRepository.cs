@@ -9,5 +9,7 @@ namespace FertilityCare.UseCase.Interfaces.Repositories
 {
     public interface IPatientRepository : IBaseRepository<Patient, Guid>
     {
+
+        Task<Patient> FindByProfileIdAsync(Guid profileId);
     }
 }

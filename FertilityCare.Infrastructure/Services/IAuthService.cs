@@ -283,7 +283,6 @@ namespace FertilityCare.Infrastructure.Services
             }
             catch (Exception ex)
             {
-                throw ex;
                 return AuthResult.Failed("Register account failed!");
             }
         }
@@ -295,7 +294,7 @@ namespace FertilityCare.Infrastructure.Services
             {
                 new (ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new (ClaimTypes.Email, user.Email ?? ""),
-                new ("userProfileId", user.UserProfileId.ToString())
+                new ("userProfileId", user.UserProfileId.ToString()),
             };
 
             claims.AddRange(roles.Select(x => new Claim(ClaimTypes.Role, x)));

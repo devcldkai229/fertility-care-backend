@@ -44,6 +44,17 @@ namespace FertilityCare.Infrastructure.Repositories
             return loadedPatient;
         }
 
+        public async Task<Patient> FindByProfileIdAsync(Guid profileId)
+        {
+            var patient = await _context.Patients.FirstOrDefaultAsync(x => x.UserProfileId == profileId);
+            if(patient is null)
+            {
+                throw new NotFoundException($"Patient with profile ID {profileId.ToString()} not found!");
+            }
+
+            return patient;
+        }
+
         public async Task<bool> IsExistAsync(Guid id)
         {
             var loadedPatient =  await _context.Patients.FindAsync(id);

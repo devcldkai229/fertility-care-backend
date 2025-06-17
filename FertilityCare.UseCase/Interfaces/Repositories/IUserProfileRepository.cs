@@ -11,5 +11,7 @@ namespace FertilityCare.UseCase.Interfaces.Repositories
     {
 
         public Task SaveChangeAsync();
+
+        public Task<UserProfile?> FindByUserIdAsync(string userId);
     }
 }
