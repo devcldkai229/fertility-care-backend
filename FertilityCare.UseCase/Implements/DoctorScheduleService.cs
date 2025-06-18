@@ -32,6 +32,42 @@ namespace FertilityCare.UseCase.Implements
             _doctorRepository = doctorRepository;
             _slotRepository = slotRepository;
         }
+
+        public async Task CreateRecurringScheduleAsync(CreateRecurringScheduleRequestDTO request)
+        {
+            var doctor = await _doctorRepository.FindByIdAsync(request.DoctorId);
+            if (doctor == null)
+                throw new NotFoundException("Doctor not found");
+
+            var schedules = new List<DoctorSchedule>();
+
+            for (var date = request.StartDate.Value; date <= request.EndDate.Value; date = date.AddDays(1))
+            {
+                if (!request.WorkingDays.Contains(date.DayOfWeek))
+                    continue;
+
+                foreach (var slotId in request.SlotIds)
+                {
+                    var schedule = new DoctorSchedule
+                    {
+                        DoctorId = request.DoctorId,
+                        WorkDate = date,
+                        SlotId = slotId,
+                        MaxAppointments = request.MaxAppointments,
+                        Note = request.Note,
+                        CreatedAt = DateTime.Now,
+                        IsAcceptingPatients = true
+                    };
+
+                    schedules.Add(schedule);
+                }
+            }
+
+            await _scheduleRepository.BulkInsertAsync(schedules);
+        }
+
+
+
         public async Task<DoctorScheduleDTO> CreateScheduleAsync(CreateDoctorScheduleRequestDTO request)
         {
             // Kiểm tra Doctor có tồn tại không

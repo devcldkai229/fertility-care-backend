@@ -87,6 +87,12 @@ namespace FertilityCare.Infrastructure.Repositories
             );
         }
 
+        public async Task BulkInsertAsync(IEnumerable<DoctorSchedule> schedules)
+        {
+            await _context.DoctorSchedules.AddRangeAsync(schedules);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<IEnumerable<DoctorSchedule>> GetSchedulesByDateAndDoctorAsync(string workDate, string doctorId)
         {
             var parsedDate = DateOnly.Parse(workDate);

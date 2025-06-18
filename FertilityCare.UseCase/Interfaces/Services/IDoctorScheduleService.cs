@@ -30,5 +30,7 @@ namespace FertilityCare.UseCase.Interfaces.Services
         Task<IEnumerable<DoctorScheduleDTO>> GetSchedulesPagedAsync(PaginationRequestDTO request);
 
         Task<IEnumerable<SlotWithScheduleDTO>> GetSlotWithDoctorsByDateAsync(string workDate, string id);
+
+        Task CreateRecurringScheduleAsync(CreateRecurringScheduleRequestDTO request);
     }
 }
